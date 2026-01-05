@@ -26,6 +26,11 @@ jwt:
       resource-id: auction-api
       principle-attribute: preferred_username
 
+keycloak:
+  token-uri: http://localhost:8180/realms/auction-system/protocol/openid-connect/token
+  client-id: auction-api
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+
 springdoc:
   api-docs:
     path: /v3/api-docs

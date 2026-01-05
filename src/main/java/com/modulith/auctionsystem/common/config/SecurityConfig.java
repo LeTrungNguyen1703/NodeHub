@@ -32,6 +32,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final String[] PUBLIC_URLS = new String[]{
             "/api/public/**",
+            "/api/v1/auth/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/actuator/**",

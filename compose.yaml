@@ -23,9 +23,10 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     # "start-dev" is optimized for development (HTTP only, no strict HTTPS)
-    command: start-dev
+    command: start-dev --import-realm
     ports:
       - '${KEYCLOAK_PORT}:8080'
     volumes:
       - ./docker-data/keycloak:/opt/keycloak/data
+      - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm.json
     restart: unless-stopped
