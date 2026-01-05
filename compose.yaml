@@ -2,7 +2,7 @@
 services:
   # MySQL Service (Your Database)
   mysql:
-    image: 'mysql:latest'
+    image: 'mysql:8.0'
     container_name: auction-mysql
     restart: unless-stopped
     environment:
