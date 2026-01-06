@@ -54,7 +54,20 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Pull MySQL Docker image
+        run: docker pull mysql:8.0
+
       - name: Build and Run Tests
         # Testcontainers will automatically spin up MySQL using Docker
-        # No extra ENV variables needed for DB
-        run: ./gradlew clean build --no-daemon
+        # TESTCONTAINERS_RYUK_DISABLED=true can help with CI cleanup
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: false
+        run: ./gradlew clean build --no-daemon --info --stacktrace
+
+      - name: Upload Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: build/reports/tests/test/
+          retention-days: 7
