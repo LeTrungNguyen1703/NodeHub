@@ -74,4 +74,23 @@ tasks.named('test') {
     useJUnitPlatform()
 
     jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
+
+    // Performance optimizations for tests
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    forkEvery = 100
+
+    // Use test result caching
+    outputs.upToDateWhen { false } // Remove this line if you want to cache test results
+}
+
+// Optimize annotation processing for faster incremental builds
+tasks.withType(JavaCompile).configureEach {
+    options.incremental = true
+    options.fork = true
+    options.forkOptions.jvmArgs += ['-Xmx1024m']
+}
+
+// Enable build caching for all tasks
+tasks.withType(Test).configureEach {
+    outputs.cacheIf { true }
 }
