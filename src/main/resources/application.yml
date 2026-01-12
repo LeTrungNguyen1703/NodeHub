@@ -14,16 +14,12 @@ spring:
         type:
           preferred_uuid_jdbc_type: CHAR
 
-  mustache:
-    check-template-location: false
-
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8180/realms/auction-system
           jwk-set-uri: http://localhost:8180/realms/auction-system/protocol/openid-connect/certs
-
 jwt:
   auth:
     converter:
@@ -56,13 +52,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-logging:
-  level:
-    org:
-      atmosphere: warn
-
-vaadin:
-  launch-browser: true
-  bun:
-    enable: true
