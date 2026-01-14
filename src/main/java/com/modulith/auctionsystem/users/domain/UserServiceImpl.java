@@ -5,6 +5,7 @@ import com.modulith.auctionsystem.users.domain.models.UserProfileView;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,12 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Transactional
     public UserProfileView syncUserFromKeycloak(Jwt jwt) {
         var id = jwt.getClaimAsString("sub");
+        log.debug("Syncing user with ID: {}", id);
 
         var user = userRepository.findById(id).orElseGet(
                 () -> User.builder()
@@ -31,6 +34,8 @@ class UserServiceImpl implements UserService {
         user.setFullName(jwt.getClaimAsString("name"));
 
         User savedUser = userRepository.save(user);
+        log.debug("Synced user with ID: {}", savedUser.getUserId());
+
         return UserProfileView.from(savedUser);
     }
 
