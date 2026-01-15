@@ -32,3 +32,23 @@ services:
       - ./docker-data/keycloak:/opt/keycloak/data
       - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm.json
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  keycloak-config-cli:
+    image: adorsys/keycloak-config-cli:latest-25
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_USER: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # Defines what to do if the state in Keycloak is different from the file
+      IMPORT_VAR_SUBSTITUTION: "true"
+      IMPORT_FILES: /config/*
+    volumes:
+      - ./keycloak-config:/config
+    depends_on:
+      keycloak:
+        condition: service_healthy
