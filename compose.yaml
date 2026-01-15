@@ -22,6 +22,8 @@ services:
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     # "start-dev" is optimized for development (HTTP only, no strict HTTPS)
     command: start-dev --import-realm
     ports:
