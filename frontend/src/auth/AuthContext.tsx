@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           const profile = await keycloak.loadUserProfile();
 
           // Extract avatar from token if available (standard claim 'picture' or custom claim)
-          const avatarUrl = (keycloak.tokenParsed as any)?.picture;
+          const avatarUrl = keycloak.tokenParsed?.picture;
 
           setUserProfile({ ...profile, avatarUrl });
 
@@ -82,7 +82,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           if (refreshed) {
             setToken(keycloak.token);
             // Update avatar if token refreshed (in case it changed)
-            const avatarUrl = (keycloak.tokenParsed as any)?.picture;
+            const avatarUrl = keycloak.tokenParsed?.picture;
             setUserProfile((prev) =>
               prev ? { ...prev, avatarUrl } : undefined,
             );
