@@ -1,14 +1,8 @@
 import './App.css';
-import { AuthProvider } from './auth/AuthContext';
-import LandingPage from "./pages/LandingPage.tsx";
+import { Outlet } from 'react-router';
 
 function App() {
-
-  return (
-    <AuthProvider>
-      <LandingPage/>
-    </AuthProvider>
-  );
+  return <Outlet />;
 }
 
 export default App;
