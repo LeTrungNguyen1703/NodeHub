@@ -7,6 +7,8 @@ const LandingPage: React.FC = () => {
   const { isAuthenticated, login, register, logout, userProfile } = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
+
+
   return (
     <div className="landing-page">
       {/* Header/Navigation */}

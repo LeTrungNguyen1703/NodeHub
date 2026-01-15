@@ -32,7 +32,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           onLoad: 'check-sso',
           checkLoginIframe: false,
           pkceMethod: 'S256',
-          silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
+          silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+          // This ensures redirects happen in same window, not new tab
+          flow: 'standard',
         });
 
         console.log('Keycloak initialized, authenticated:', authenticated);
@@ -77,19 +79,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   }, []);
 
-  const login = async () => {
-    await  keycloak.login({
-        redirectUri: window.location.origin
+  const login = () => {
+    // This will redirect in the same tab, not open a new one
+    keycloak.login({
+      redirectUri: window.location.href, // Use current URL to return to same page
     });
-    await syncUserWithBackend();
+
   };
 
-  const register = async () => {
-    await keycloak.register({
-        redirectUri: window.location.origin
+  const register = () => {
+    // This will redirect in the same tab, not open a new one
+    keycloak.register({
+      redirectUri: window.location.href, // Use current URL to return to same page
     });
-
-    await syncUserWithBackend();
   };
 
   const logout = () => {
