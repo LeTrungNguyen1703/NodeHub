@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import ProfileModal from '../components/ProfileModal';
 import './LandingPage.css';
@@ -20,22 +21,39 @@ const LandingPage: React.FC = () => {
             {isAuthenticated ? (
               <div className="user-menu">
                 <button
+                  type="button"
                   className="btn btn-profile"
                   onClick={() => setIsProfileModalOpen(true)}
                 >
                   <span className="user-icon">👤</span>
-                  <span>{userProfile?.firstName || userProfile?.username || 'Profile'}</span>
+                  <span>
+                    {userProfile?.firstName ||
+                      userProfile?.username ||
+                      'Profile'}
+                  </span>
                 </button>
-                <button className="btn btn-secondary" onClick={logout}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={logout}
+                >
                   Logout
                 </button>
               </div>
             ) : (
               <div className="auth-buttons">
-                <button className="btn btn-secondary" onClick={login}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={login}
+                >
                   Login
                 </button>
-                <button className="btn btn-primary" onClick={register}>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={register}
+                >
                   Register
                 </button>
               </div>
@@ -48,22 +66,27 @@ const LandingPage: React.FC = () => {
       <main className="main-content">
         <div className="hero-section">
           <div className="container">
-            <h2 className="hero-title">
-              Welcome to Auction System
-            </h2>
+            <h2 className="hero-title">Welcome to Auction System</h2>
             <p className="hero-subtitle">
               {isAuthenticated
                 ? `Hello, ${userProfile?.firstName || userProfile?.username}! Ready to start bidding?`
-                : 'Join us today and start bidding on amazing items!'
-              }
+                : 'Join us today and start bidding on amazing items!'}
             </p>
 
             {!isAuthenticated && (
               <div className="hero-actions">
-                <button className="btn btn-primary btn-large" onClick={register}>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-large"
+                  onClick={register}
+                >
                   Get Started
                 </button>
-                <button className="btn btn-outline btn-large" onClick={login}>
+                <button
+                  type="button"
+                  className="btn btn-outline btn-large"
+                  onClick={login}
+                >
                   Sign In
                 </button>
               </div>
@@ -71,10 +94,11 @@ const LandingPage: React.FC = () => {
 
             {isAuthenticated && (
               <div className="hero-actions">
-                <button className="btn btn-primary btn-large">
+                <button type="button" className="btn btn-primary btn-large">
                   Browse Auctions
                 </button>
                 <button
+                  type="button"
                   className="btn btn-outline btn-large"
                   onClick={() => setIsProfileModalOpen(true)}
                 >
@@ -128,4 +152,3 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
-
