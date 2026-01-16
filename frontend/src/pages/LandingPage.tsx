@@ -1,12 +1,25 @@
 import type React from 'react';
 import { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from 'react-oidc-context';
+import { getUserProfile, login, logout, register } from '../auth/auth.utils';
 import ProfileModal from '../components/ProfileModal';
 import './LandingPage.css';
 
 const LandingPage: React.FC = () => {
-  const { isAuthenticated, login, register, logout, userProfile } = useAuth();
+  const auth = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const userProfile = getUserProfile(auth.user);
+  const isAuthenticated = auth.isAuthenticated && !auth.isLoading;
+
+  // Show loading state
+  if (auth.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading authentication...
+      </div>
+    );
+  }
 
   return (
     <div className="landing-page">
@@ -27,15 +40,15 @@ const LandingPage: React.FC = () => {
                 >
                   <span className="user-icon">👤</span>
                   <span>
-                    {userProfile?.firstName ||
-                      userProfile?.username ||
+                    {userProfile?.given_name ||
+                      userProfile?.preferred_username ||
                       'Profile'}
                   </span>
                 </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={logout}
+                  onClick={() => logout(auth)}
                 >
                   Logout
                 </button>
@@ -45,14 +58,14 @@ const LandingPage: React.FC = () => {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={login}
+                  onClick={() => login(auth)}
                 >
                   Login
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={register}
+                  onClick={() => register(auth)}
                 >
                   Register
                 </button>
@@ -69,7 +82,7 @@ const LandingPage: React.FC = () => {
             <h2 className="hero-title">Welcome to Auction System</h2>
             <p className="hero-subtitle">
               {isAuthenticated
-                ? `Hello, ${userProfile?.firstName || userProfile?.username}! Ready to start bidding?`
+                ? `Hello, ${userProfile?.given_name || userProfile?.preferred_username}! Ready to start bidding?`
                 : 'Join us today and start bidding on amazing items!'}
             </p>
 
@@ -78,14 +91,14 @@ const LandingPage: React.FC = () => {
                 <button
                   type="button"
                   className="btn btn-primary btn-large"
-                  onClick={register}
+                  onClick={() => register(auth)}
                 >
                   Get Started
                 </button>
                 <button
                   type="button"
                   className="btn btn-outline btn-large"
-                  onClick={login}
+                  onClick={() => login(auth)}
                 >
                   Sign In
                 </button>

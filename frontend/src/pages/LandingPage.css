@@ -35,7 +35,8 @@
   gap: 1rem;
 }
 
-.user-menu, .auth-buttons {
+.user-menu,
+.auth-buttons {
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -103,7 +104,9 @@
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   border: 1px solid #e9ecef;
 }
 
@@ -313,7 +316,7 @@
   gap: 0.25rem;
 }
 
-.profile-field label {
+.profile-field .field-label {
   font-weight: 600;
   color: #666;
   font-size: 0.875rem;
@@ -321,7 +324,7 @@
   letter-spacing: 0.5px;
 }
 
-.profile-field span {
+.profile-field span:not(.field-label) {
   color: #333;
   font-size: 1.1rem;
   padding: 0.5rem;
@@ -370,4 +373,3 @@
     justify-content: center;
   }
 }
-

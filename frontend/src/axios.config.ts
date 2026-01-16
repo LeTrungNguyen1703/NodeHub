@@ -1,24 +1,23 @@
 import axios from 'axios';
-import keycloak from './auth/keycloak.ts';
 
 axios.defaults.baseURL = '/';
 
-axios.interceptors.request.use(
-  async (config) => {
-    if (keycloak.token) {
-      // Optional: Check if token is expired and update it
-      try {
-        await keycloak.updateToken(30);
-      } catch (e) {
-        console.error('Failed to refresh token', e);
-        await keycloak.logout();
-      }
+// Token will be added by a request interceptor that we'll set up after OIDC is initialized
+// This will be done in main.tsx after AuthProvider is mounted
 
-      config.headers.Authorization = `Bearer ${keycloak.token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+export const setupAxiosInterceptors = (
+  getAccessToken: () => string | undefined,
+) => {
+  axios.interceptors.request.use(
+    async (config) => {
+      const token = getAccessToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
+};

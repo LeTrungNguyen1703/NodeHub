@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Silent SSO Check</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Authentication</title>
 </head>
 <body>
+    <script src="https://unpkg.com/oidc-client-ts@3.4.1/dist/browser/oidc-client-ts.min.js"></script>
     <script>
-        parent.postMessage(location.href, location.origin);
+        // This page is loaded in a hidden iframe for silent token renewal
+        // oidc-client-ts will handle the authentication callback automatically
+
+        new window.oidc.UserManager({}).signinSilentCallback().catch((err) => {
+            console.error('Silent authentication error:', err);
+        });
     </script>
 </body>
 </html>
