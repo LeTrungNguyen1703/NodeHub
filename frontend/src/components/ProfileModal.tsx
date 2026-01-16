@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useAuth } from 'react-oidc-context';
-import { getUserProfile } from '../auth/auth.utils';
+import { getUserProfile } from '@/auth/auth.utils';
 
 interface ProfileModalProps {
   isOpen: boolean;

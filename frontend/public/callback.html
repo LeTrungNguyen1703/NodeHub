@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Callback</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        h2 {
+            color: #333;
+            margin: 0 0 0.5rem;
+        }
+        p {
+            color: #666;
+            margin: 0;
+        }
+        .error {
+            color: #e74c3c;
+            background: #fef0ef;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>Completing Authentication...</h2>
+        <p>Please wait while we log you in.</p>
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script src="https://unpkg.com/oidc-client-ts@3.4.1/dist/browser/oidc-client-ts.min.js"></script>
+    <script type="module">
+        import { oidcConfig } from "../src/auth/oidc.config.ts";
+
+        // This page handles the OAuth/OIDC callback after authentication
+        // It processes the authorization code and redirects back to the app
+
+        (() => {
+            const showError = (message) => {
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                console.error('Authentication callback error:', message);
+            };
+
+            try {
+                // Create a UserManager instance to handle the callback
+                new window.oidc.UserManager({
+                    ...oidcConfig,
+                    response_mode: 'query'
+                })
+                .signinRedirectCallback()
+                .then((user) => {
+                    console.log('Authentication successful:', user);
+                    // Redirect to the stored state URL or default to home
+                    window.location.href = user.state?.returnUrl || '/';
+                })
+                .catch((err) => {
+                    showError(`Authentication failed: ${err.message || 'Unknown error'}`);
+                    console.error('Signin callback error:', err);
+
+                    // Redirect to home after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                });
+            } catch (err) {
+                showError(`Failed to initialize authentication: ${err.message || 'Unknown error'}`);
+                console.error('Initialization error:', err);
+
+                // Redirect to home after 3 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 3000);
+            }
+        })();
+    </script>
+</body>
+</html>
+

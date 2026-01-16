@@ -7,11 +7,13 @@
 </head>
 <body>
     <script src="https://unpkg.com/oidc-client-ts@3.4.1/dist/browser/oidc-client-ts.min.js"></script>
-    <script>
+    <script type="module">
+        import { oidcConfig } from "../src/auth/oidc.config.ts";
+
         // This page is loaded in a hidden iframe for silent token renewal
         // oidc-client-ts will handle the authentication callback automatically
 
-        new window.oidc.UserManager({}).signinSilentCallback().catch((err) => {
+        new window.oidc.UserManager(oidcConfig).signinSilentCallback().catch((err) => {
             console.error('Silent authentication error:', err);
         });
     </script>

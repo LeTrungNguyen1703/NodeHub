@@ -70,8 +70,8 @@ export const AuthMiddleware = () => {
   // Redirect to login if not authenticated
   if (!auth.isAuthenticated) {
     // Store the attempted URL for redirect after login
-    const currentUrl = window.location.href;
-    void auth.signinRedirect({ redirect_uri: currentUrl });
+    const returnUrl = window.location.pathname + window.location.search;
+    void auth.signinRedirect({ state: { returnUrl } });
 
     return (
       <div

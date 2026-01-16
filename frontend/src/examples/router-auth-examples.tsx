@@ -6,9 +6,9 @@
  */
 
 import { createBrowserRouter } from 'react-router';
-import App from '../App';
-import { AuthMiddleware, GuestMiddleware } from '../middlewares/AuthMiddleware';
-import LandingPage from '../pages/LandingPage';
+import App from '@/App';
+import { AuthMiddleware, GuestMiddleware } from '@/middlewares/AuthMiddleware';
+import LandingPage from '@/pages/LandingPage';
 
 /**
  * Example 1: Basic router with public and protected routes

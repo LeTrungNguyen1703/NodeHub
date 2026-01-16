@@ -21,7 +21,9 @@ export interface UserProfile {
 export const requireAuth = (auth: AuthContextProps) => {
   if (!auth.isAuthenticated && !auth.isLoading) {
     // User is not authenticated, redirect to login
-    void auth.signinRedirect({ redirect_uri: window.location.href });
+    void auth.signinRedirect({
+      state: { returnUrl: window.location.pathname + window.location.search },
+    });
     throw redirect('/');
   }
 
@@ -57,7 +59,9 @@ export const isAuthenticated = (auth: AuthContextProps): boolean => {
  * Login function
  */
 export const login = (auth: AuthContextProps) => {
-  void auth.signinRedirect({ redirect_uri: window.location.href });
+  void auth.signinRedirect({
+    state: { returnUrl: window.location.pathname + window.location.search },
+  });
 };
 
 /**
@@ -65,8 +69,8 @@ export const login = (auth: AuthContextProps) => {
  */
 export const register = (auth: AuthContextProps) => {
   void auth.signinRedirect({
-    redirect_uri: window.location.href,
-    prompt: 'create',
+    state: { returnUrl: window.location.pathname + window.location.search },
+    extraQueryParams: { kc_action: 'REGISTER' },
   });
 };
 

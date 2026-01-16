@@ -1,8 +1,8 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { getUserProfile, login, logout, register } from '../auth/auth.utils';
-import ProfileModal from '../components/ProfileModal';
+import { getUserProfile, login, logout, register } from '@/auth/auth.utils';
+import ProfileModal from '@/components/ProfileModal';
 import './LandingPage.css';
 
 const LandingPage: React.FC = () => {

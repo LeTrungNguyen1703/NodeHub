@@ -3,7 +3,7 @@ import type { UserManagerSettings } from 'oidc-client-ts';
 export const oidcConfig: UserManagerSettings = {
   authority: 'http://localhost:8180/realms/auction-system',
   client_id: 'auction-fe',
-  redirect_uri: `${window.location.origin}/`,
+  redirect_uri: `${window.location.origin}/callback.html`,
   silent_redirect_uri: `${window.location.origin}/silent-check-sso.html`,
   post_logout_redirect_uri: window.location.origin,
   response_type: 'code',
