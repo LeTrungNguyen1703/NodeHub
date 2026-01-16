@@ -1,8 +1,4 @@
-declare module 'keycloak-js' {
-  interface KeycloakTokenParsed {
-    picture?: string;
-    [key: string]: any;
-  }
-}
+// Global type declarations
+// Add any custom type declarations here if needed
 
 export {};
