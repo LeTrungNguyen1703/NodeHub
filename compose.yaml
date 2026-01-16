@@ -26,12 +26,11 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       KC_HEALTH_ENABLED: "true"
     # "start-dev" is optimized for development (HTTP only, no strict HTTPS)
-    command: start-dev --import-realm
+    command: start-dev
     ports:
       - '${KEYCLOAK_PORT}:8080'
     volumes:
       - ./docker-data/keycloak:/opt/keycloak/data
-      - ./keycloak-config/realm-export.json:/opt/keycloak/data/import/realm.json
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\\r\\nhost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep 'HTTP/1.1 200 OK' <&3" ]
@@ -42,12 +41,14 @@ services:
 
   keycloak-config-cli:
     image: adorsys/keycloak-config-cli:latest-26
+    container_name: auction-keycloak-config-cli
     environment:
       KEYCLOAK_URL: http://keycloak:8080
       KEYCLOAK_USER: ${KEYCLOAK_ADMIN}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      # Defines what to do if the state in Keycloak is different from the file
-      IMPORT_VAR_SUBSTITUTION: "true"
+      KEYCLOAK_CLIENTSECRET: ${KEYCLOAK_CLIENT_SECRET}
+      # Defines what to do if the state in Keycloak is different from the file`
+      IMPORT_VARSUBSTITUTION_ENABLED: "true"
       IMPORT_FILES: /config/*
     volumes:
       - ./keycloak-config:/config
