@@ -47,6 +47,8 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_ADMIN}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KEYCLOAK_CLIENTSECRET: ${KEYCLOAK_CLIENT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       # Defines what to do if the state in Keycloak is different from the file`
       IMPORT_VARSUBSTITUTION_ENABLED: "true"
       IMPORT_FILES: /config/*
