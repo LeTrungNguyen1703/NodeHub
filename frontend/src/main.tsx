@@ -26,6 +26,7 @@ const router = createBrowserRouter([
 ]);
 
 // Component to setup axios interceptors and sync user with backend
+// eslint-disable-next-line react-refresh/only-export-components
 const AuthSetup = () => {
   const auth = useAuth();
 
