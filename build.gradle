@@ -28,6 +28,7 @@ ext {
     set('springModulithVersion', "1.4.6")
     set('mapstructVersion', "1.6.3")
     set('springdocVersion', "2.8.15")
+    set('keycloakVersion', "26.0.7")
 }
 
 dependencies {
@@ -46,6 +47,9 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    implementation 'com.cloudinary:cloudinary-http44:1.38.0'
+    implementation 'com.cloudinary:cloudinary-core:1.38.0'
+    implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

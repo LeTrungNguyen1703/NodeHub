@@ -2,8 +2,8 @@ package com.modulith.auctionsystem.users.web.controllers;
 
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
 import com.modulith.auctionsystem.users.domain.AuthService;
-import com.modulith.auctionsystem.users.domain.models.LoginRequest;
-import com.modulith.auctionsystem.users.domain.models.LoginResponse;
+import com.modulith.auctionsystem.users.web.dto.LoginRequest;
+import com.modulith.auctionsystem.users.web.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

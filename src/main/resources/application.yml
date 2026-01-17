@@ -30,6 +30,11 @@ keycloak:
   token-uri: http://localhost:8180/realms/auction-system/protocol/openid-connect/token
   client-id: auction-api
   client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+  admin:
+    server-url: http://localhost:8180
+    realm: auction-system
+    client-id: auction-api
+    client-secret: ${KEYCLOAK_CLIENT_SECRET}
 
 springdoc:
   api-docs:
@@ -52,3 +57,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+cloudinary:
+  cloud_name: your_cloud_name
+  api_key: your_api_key
+  api_secret: your_api_secret

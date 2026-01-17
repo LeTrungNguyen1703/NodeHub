@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,17 +21,16 @@ import java.time.Instant;
 public class User extends AbstractAuditableEntity {
     @Id
     @Size(max = 36)
-    @NotNull
     @Column(name = "user_id", nullable = false, length = 36)
     private String userId;
 
-    @Size(max = 255)
     @NotNull
+    @Size(max = 255)
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Size(max = 100)
     @NotNull
+    @Size(max = 100)
     @Column(name = "username", nullable = false, length = 100)
     private String username;
 
@@ -48,10 +49,33 @@ public class User extends AbstractAuditableEntity {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        if (preferredLanguage == null) {
-            preferredLanguage = "vi";
-        }
-    }
+    @Size(max = 20)
+    @Column(name = "phone", length = 20)
+    private String phone;
+
+    @Lob
+    @Column(name = "address", columnDefinition = "text")
+    private String address;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "avatar")
+    private String avatar;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "balance", nullable = false)
+    private Long balance;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'client_user'")
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "is_anonymous", nullable = false)
+    private boolean isAnonymous;
 }
