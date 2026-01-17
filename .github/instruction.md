@@ -1,144 +1,255 @@
-# Gemini Rules for Flashcard Backend Project
+# Auction System - AI Coding Rules
 
-This document outlines the general rules and guidelines for generating and maintaining code and tests within the `com.modulith.flashcardbe` project.
+## 1. Testing Strategy
 
-## 1. General Testing Philosophy
+### Integration Tests
+- **Pattern:** `*IT.java` (e.g., `AuctionLifecycleIT.java`)
+- **Base:** Extend `BaseIntegrationTest` for Spring Boot + Testcontainers + MockMvc setup
+- **Modulith:** Use `@ApplicationModuleTest` for module tests with `Scenario` for event verification
+- **Environment:** `@SpringBootTest(webEnvironment = RANDOM_PORT)` via `BaseIntegrationTest`
+- **Database:** MySQL/PostgreSQL via Testcontainers, auto-rollback with `@Transactional`
+- **Structure:** Group tests with `@Nested` classes, use `@DisplayName` for readability
+- **Mocks:** Mock external services (PayOS, Email) as `@Primary` beans in `TestcontainersConfiguration`
 
-*   **Integration over Unit:** Prioritize integration tests (`*IT.java`) for Controllers to verify the full stack (Controller -> Service -> DB).
-*   **Base Class:** Extend `BaseIntegrationTest` for all integration tests to inherit configuration for Spring Boot, Testcontainers, and MockMvc.
-*   **Modulith Testing:** Use `@ApplicationModuleTest` for module-specific integration tests (e.g., `DeckModuleTest`) to verify internal module logic and event publication using `Scenario`.
-*   **Environment:** Use `@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)` for integration tests (handled by `BaseIntegrationTest`).
-*   **Containers:** Use `TestcontainersConfiguration` to manage database dependencies (PostgreSQL, etc.) ensuring a clean, isolated environment.
-*   **MockMvc:** Use `@AutoConfigureMockMvc` to inject and use `MockMvc` for REST API testing (handled by `BaseIntegrationTest`).
-*   **Transactional:** Apply `@Transactional` at the class level for test classes to ensure database rollback after each test (handled by `BaseIntegrationTest`).
-*   **Structure:** Use `@Nested` inner classes to group tests by functionality (e.g., `CrudTests`, `SecurityTests`).
-*   **Readability:** Use `@DisplayName` to describe the test class and methods in plain English.
+### Test Scenarios
+- **POST:** 201 Created, verify response, test 400 for invalid input
+- **GET:** 200 OK, test pagination (`page`, `size`, `isFirst`, `isLast`)
+- **PUT/PATCH:** 200 OK, verify state change
+- **DELETE:** 204 No Content, verify deletion
 
-## 2. Authentication and Security
+## 2. Authentication & Security
 
-*   **Keycloak Simulation:** The application uses Keycloak. Use `KeycloakTestUtils` (in `common` package) to generate mock JWTs.
-*   **Role-Based Access:**
-    *   Create helper methods in module-specific `TestUtils` (e.g., `DeckTestUtils`) to generate JWTs with specific roles/authorities.
-    *   Test **Happy Path**: Request with valid JWT and roles -> 200/201.
-    *   Test **Unauthorized**: Request with no JWT -> 401.
-    *   Test **Forbidden**: Request with valid JWT but missing roles -> 403.
-*   **User Synchronization:** For tests requiring a valid user in the local DB, call `userService.syncUserFromKeycloak(KeycloakTestUtils.createRawJwt())` in the `@BeforeEach` setup.
+### Keycloak Integration
+- **Test Utils:** Use `KeycloakTestUtils.createMockJwt(userId, role)` for mock JWTs
+- **User Sync:** Call `userService.syncUserFromKeycloak(jwt)` in `@BeforeEach` when needed
+- **Test Coverage:**
+    - ✅ Happy Path: Valid JWT + roles → 200/201
+    - ❌ Unauthorized: No JWT → 401
+    - ❌ Forbidden: Valid JWT, missing role → 403
 
-## 3. Test Data Management
+### Example
+```java
+String adminJwt = KeycloakTestUtils.createMockJwt("admin123", "client_admin");
+String userJwt = KeycloakTestUtils.createMockJwt("user456", "client_user");
+```
 
-*   **Module TestUtils:** Create a `*TestUtils` class for each module (e.g., `DeckTestUtils`, `UserTestUtils`) to encapsulate data creation logic.
-*   **Builders:** Use the Builder pattern for creating DTOs and Entities to keep tests clean.
-*   **Avoid Hardcoding:** Prefer using helper methods to generate JSON bodies or objects rather than hardcoded strings, unless testing specific malformed JSON.
+## 3. Code Organization
 
-## 4. Naming Conventions
+### Module Structure
+```
+auction-system/
+├── user/
+│   ├── web/controller/       # UserController
+│   ├── domain/               # UserService, User entity
+│   ├── config/               # UserExceptionHandler
+│   └── event/                # UserCreatedEvent
+├── auction/
+│   ├── web/controller/       # AuctionController, BidController
+│   ├── domain/               # AuctionService, Auction, Bid
+│   ├── internal/             # TimeExtender, AutoBidProcessor
+│   ├── config/               # AuctionExceptionHandler
+│   └── event/                # AuctionCompletedEvent, BidPlacedEvent
+├── payment/
+│   ├── web/controller/       # PaymentController
+│   ├── domain/               # PaymentService, Transaction
+│   ├── config/               # PaymentExceptionHandler
+│   └── event/                # PaymentCompletedEvent
+└── notification/
+    ├── web/controller/       # NotificationController
+    ├── domain/               # NotificationService
+    └── event/                # (Event listeners only)
+```
 
-*   **Test Classes:** Ends with `IT` (e.g., `DeckLifecycleIT`).
-*   **Test Methods:** Use `should[Action][Condition]` format (e.g., `shouldCreateResourceSuccessfully`, `shouldReturn400WhenInvalidData`).
+### Test Utils
+- **Pattern:** `<Module>TestUtils.java` per module
+- **Purpose:** Encapsulate test data creation (entities, DTOs, JWTs)
+- **Example:** `AuctionTestUtils.createAuctionDto()`, `ProductTestUtils.createProduct()`
 
-## 5. Standard API Test Scenarios
+## 4. API Documentation (Swagger)
 
-*   **Create (POST):**
-    *   Verify 201 Created.
-    *   Verify response body matches created data.
-    *   Verify 400 Bad Request for invalid input (validation).
-*   **Read (GET):**
-    *   Verify 200 OK.
-    *   Verify correct data mapping.
-    *   **Pagination:** For list endpoints, use `@ParameterizedTest` to verify `page`, `size`, `isFirst`, `isLast`, `hasNext`.
-*   **Update (PUT/PATCH):**
-    *   Verify 200 OK.
-    *   Verify state change.
-*   **Delete (DELETE):**
-    *   Verify 204 No Content.
-    *   Verify resource is gone.
+### Controller Level
+```java
+@Tag(name = "Auctions", description = "Manage auction sessions")
+@RestController
+@RequestMapping("/api/v1/auctions")
+```
 
-## 6. Swagger/OpenAPI Documentation
+### Endpoint Level
+```java
+@Operation(
+    summary = "Create auction",
+    description = """
+        Creates a new auction session for an approved product.
+        Requires client_admin or client_user role.
+        """,
+    security = @SecurityRequirement(name = "bearer-jwt")
+)
+@ApiResponses({
+    @ApiResponse(responseCode = "201", description = "Auction created"),
+    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "401", description = "Not authenticated"),
+    @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
+    @ApiResponse(responseCode = "404", description = "Product not found")
+})
+```
 
-*   **Controller Level:**
-    *   Use `@Tag(name = "...", description = "...")` to categorize endpoints.
-*   **Endpoint Level:**
-    *   Use `@Operation` with `summary` and `description` for each endpoint.
-    *   Add `security = @SecurityRequirement(name = "bearer-jwt")` for protected endpoints.
-    *   Use triple-quoted strings (`"""..."""`) for multi-line descriptions.
-*   **Response Documentation:**
-    *   Use `@ApiResponses` with `@ApiResponse` for each possible status code:
-        *   **200/201**: Success responses
-        *   **400**: Bad Request (validation failures)
-        *   **401**: Unauthorized (missing authentication)
-        *   **403**: Forbidden (insufficient permissions)
-        *   **404**: Not Found
-        *   **502**: Bad Gateway (external service failures)
-    *   Include `@Content` with `@Schema` to specify response types.
-*   **Standard Errors:**
-    *   Add `@ApiStandardErrors` annotation to include common error responses (500, etc.).
-*   **Request Body:**
-    *   Use `@io.swagger.v3.oas.annotations.parameters.RequestBody` for detailed request documentation.
-    *   Include `@Schema` to specify the DTO class.
-*   **Parameters:**
-    *   Use `@Parameter(hidden = true)` for `@AuthenticationPrincipal Jwt jwt`.
-    *   Add descriptions to path/query parameters with `@Parameter(description = "...")`.
-*   **DTO Schemas:**
-    *   Add `@Schema(description = "...")` to record classes.
-    *   Add `@Schema` annotations to individual fields with `example` and `required` attributes.
+### DTOs
+```java
+@Schema(description = "Request to create an auction")
+public record CreateAuctionRequest(
+    @Schema(description = "Product ID", example = "123", required = true)
+    @NotNull Long productId,
+    
+    @Schema(description = "Start time", example = "2024-12-01T10:00:00")
+    @NotNull LocalDateTime startTime
+) {}
+```
 
-## 7. Exception Handling
+## 5. Exception Handling
 
-*   **Module-Specific Handlers:**
-    *   Create `<Module>ExceptionHandler` class in `<module>/config/` package.
-    *   Extend `ResponseEntityExceptionHandler`.
-    *   Use `@RestControllerAdvice` and `@Order(Ordered.HIGHEST_PRECEDENCE)`.
-*   **Custom Exceptions:**
-    *   Create domain-specific exceptions (e.g., `DeckNotFoundException`, `InvalidAiRequestException`).
-    *   Place in `<module>/config/` or `<module>/domain/` package.
-*   **Exception Mapping:**
-    *   `NotFoundException` → 404
-    *   `ValidationException`/`InvalidRequestException` → 400
-    *   `ServiceException` (external API failures) → 502
-    *   `CacheException`/Internal errors → 500
-*   **ProblemDetail:**
-    *   Use `ProblemDetail.forStatusAndDetail(status, message)` for RFC 7807 compliance.
-    *   Set `title`, `timestamp`, and relevant `properties`.
-*   **Logging:**
-    *   Use `log.debug()` for client errors (4xx).
-    *   Use `log.error()` for server errors (5xx).
+### Module Exception Handler
+```java
+@RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
+@Slf4j
+public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
+    
+    @ExceptionHandler(AuctionNotFoundException.class)
+    ProblemDetail handleNotFound(AuctionNotFoundException ex) {
+        log.debug("Auction not found: {}", ex.getMessage());
+        var problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Auction Not Found");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+}
+```
 
-## 8. Validation
+### Exception Mapping
+- `*NotFoundException` → 404
+- `InvalidRequest*Exception`, Validation errors → 400
+- `Insufficient*Exception` → 403
+- `PayOS*Exception`, External API errors → 502
+- Internal errors → 500
 
-*   **DTOs:**
-    *   Use Jakarta Validation annotations on record fields:
-        *   `@NotNull`, `@NotBlank`, `@NotEmpty`
-        *   `@Size(min = ..., max = ...)`
-        *   `@Email`, `@Pattern`, `@Min`, `@Max`
-    *   Add custom messages: `message = "..."`
-*   **Controller:**
-    *   Use `@Valid` on `@RequestBody` parameters.
-    *   Use `@Validated` on class level if needed.
-*   **Response:**
-    *   Validation errors automatically return 400 with field-level details.
+### Logging
+- `log.debug()` for 4xx errors
+- `log.error()` for 5xx errors
 
-## 9. Response Wrapping
+## 6. Validation
 
-*   **Standard Format:**
-    *   Use `GenericApiResponse<T>` for all responses.
-    *   Success: `GenericApiResponse.success(message, data)`
-    *   Success with status: `GenericApiResponse.success(message, data, statusCode)`
-*   **Return Types:**
-    *   Use `ResponseEntity<GenericApiResponse<T>>` for typed responses.
-    *   Use `ResponseEntity.status(...).body(...)` pattern.
+### DTO Validation
+```java
+public record PlaceBidRequest(
+    @NotNull(message = "Auction ID is required")
+    Long auctionId,
+    
+    @NotNull(message = "Bid amount is required")
+    @Min(value = 1000, message = "Minimum bid is 1,000 VND")
+    Long bidAmount
+) {}
+```
 
-## 10. Code Style & Libraries
+### Controller
+```java
+@PostMapping("/bids")
+public ResponseEntity<GenericApiResponse<BidResponse>> placeBid(
+    @Valid @RequestBody PlaceBidRequest request,
+    @AuthenticationPrincipal Jwt jwt
+) {
+    // ...
+}
+```
 
-*   **Lombok:** Use `@Slf4j` for logging and Lombok annotations for data classes.
-*   **Assertions:** Use `MockMvcResultMatchers` (`jsonPath`, `status`) for API assertions.
-*   **Java Version:** Project uses Java 21.
+## 7. Response Format
 
-## 11. Directory Structure
+### Standard Wrapper
+```java
+// Success
+return ResponseEntity.status(HttpStatus.CREATED)
+    .body(GenericApiResponse.success("Bid placed successfully", bidResponse));
 
-*   **Source Code:** `src/main/java/com/modulith/flashcardbe/<module>/`
-    *   **Controllers:** `<module>/web/controller/`
-    *   **Services:** `<module>/domain/` or `<module>/`
-    *   **Config/Exceptions:** `<module>/config/`
-    *   **DTOs:** `<module>/shared/dtos/` or `<module>/domain/models/`
-*   **Tests:** `src/test/java/com/modulith/flashcardbe/<module>/`
-    *   **Controller Tests:** `.../<module>/web/controller/`
-    *   **Module Utils:** `.../<module>/<Module>TestUtils.java`
+// Success with custom status
+return ResponseEntity.ok(
+    GenericApiResponse.success("Auction retrieved", auctionResponse, 200)
+);
+```
+
+### Generic Response Structure
+```java
+public record GenericApiResponse<T>(
+    String message,
+    T data,
+    Integer statusCode,
+    LocalDateTime timestamp
+) {
+    public static <T> GenericApiResponse<T> success(String message, T data) {
+        return new GenericApiResponse<>(message, data, 200, LocalDateTime.now());
+    }
+}
+```
+
+## 8. Event-Driven Communication
+
+### Publishing Events
+```java
+@Service
+@Slf4j
+public class AuctionService {
+    private final ApplicationEventPublisher eventPublisher;
+    
+    public void completeAuction(Long auctionId) {
+        // ... business logic
+        eventPublisher.publishEvent(new AuctionCompletedEvent(auction));
+        log.debug("Published AuctionCompletedEvent for auction {}", auctionId);
+    }
+}
+```
+
+### Listening to Events
+```java
+@Service
+@Slf4j
+public class NotificationService {
+    
+    @EventListener
+    public void onAuctionCompleted(AuctionCompletedEvent event) {
+        log.debug("Received AuctionCompletedEvent for auction {}", event.auctionId());
+        // Send email to winner/loser
+    }
+}
+```
+
+## 9. Naming Conventions
+
+### Tests
+- Class: `AuctionLifecycleIT`, `BidPlacementIT`
+- Method: `shouldCreateAuctionSuccessfully()`, `shouldReturn403WhenNotAdmin()`
+
+### Code
+- Entity: `Auction`, `Bid`, `Transaction`
+- DTO: `CreateAuctionRequest`, `AuctionResponse`
+- Service: `AuctionService`, `BidService`
+- Event: `AuctionCompletedEvent`, `BidPlacedEvent`
+
+## 10. Tech Stack
+
+- **Java:** 21
+- **Framework:** Spring Boot 3.x, Spring Modulith
+- **Database:** MySQL (BIGINT for VND currency)
+- **Auth:** Keycloak (JWT)
+- **Payment:** PayOS
+- **Testing:** JUnit 5, Testcontainers, MockMvc
+- **Logging:** SLF4J + Lombok `@Slf4j`
+
+## 11. Quick Checklist
+
+When creating a new endpoint:
+- [ ] Add `@Operation` with description and security
+- [ ] Add `@ApiResponses` for all status codes
+- [ ] Validate input with `@Valid` and Jakarta annotations
+- [ ] Use `GenericApiResponse` wrapper
+- [ ] Create exception handler for domain exceptions
+- [ ] Write integration test with auth scenarios
+- [ ] Publish events for cross-module communication
+- [ ] Add `@Schema` to DTOs
