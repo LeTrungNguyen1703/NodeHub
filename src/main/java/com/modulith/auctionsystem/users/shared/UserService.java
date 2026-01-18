@@ -9,9 +9,10 @@ import java.util.Optional;
 public interface UserService {
     UserResponse syncUserOnLogin(Jwt jwt);
 
-    Optional<UserResponse> findByEmail(String email);
+    UserResponse findByEmail(String email);
 
-    Optional<UserResponse> findByUserId(String userId);
+   UserResponse findByUserId(String userId);
 
     void updateUserProfile(String userId, UpdateProfileRequest updateProfileRequest);
+
 }

@@ -1,5 +1,6 @@
 package com.modulith.auctionsystem.users.internal;
 
+import com.modulith.auctionsystem.users.config.UserNotFoundException;
 import com.modulith.auctionsystem.users.domain.Role;
 import com.modulith.auctionsystem.users.domain.User;
 import com.modulith.auctionsystem.users.domain.UserRepository;
@@ -8,6 +9,8 @@ import com.modulith.auctionsystem.users.shared.dtos.UpdateProfileRequest;
 import com.modulith.auctionsystem.users.shared.dtos.UserResponse;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
@@ -25,15 +28,17 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final ApplicationEventPublisher events;
-    private final Keycloak keycloak;
+    UserRepository userRepository;
+    UserMapper userMapper;
+    ApplicationEventPublisher events;
+    Keycloak keycloak;
 
     @Value("${keycloak.admin.realm}")
-    private String realm;
+    @NonFinal
+    String realm;
 
     @Override
     @Transactional
@@ -75,14 +80,18 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<UserResponse> findByEmail(String email) {
-        return userRepository.findByEmail(email).map(userMapper::toUserResponse);
+    public UserResponse findByEmail(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+        return userMapper.toUserResponse(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<UserResponse> findByUserId(String userId) {
-        return userRepository.findById(userId).map(userMapper::toUserResponse);
+    public UserResponse findByUserId(String userId) {
+        var user = this.getUserById(userId);
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override
@@ -97,7 +106,6 @@ class UserServiceImpl implements UserService {
         updateKeycloakUser(user);
 
         userRepository.save(user);
-
 
         log.debug("Updated profile for user {}", userId);
     }
@@ -120,7 +128,13 @@ class UserServiceImpl implements UserService {
         }
     }
 
-    private void handleSplitFullNameToFristAndLastName(User user, UserRepresentation userRepresentation) {
+    //----------------------------- Helper method only used inside this class -------------------------
+
+    User getUserById(String id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    void handleSplitFullNameToFristAndLastName(User user, UserRepresentation userRepresentation) {
         if (user.getFullName() != null) {
             String fullName = user.getFullName().trim();
             if (!fullName.isBlank()) {

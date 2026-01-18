@@ -62,7 +62,7 @@ class UserController {
     }
 
     @GetMapping("/email/{email}")
-    @PreAuthorize("hasRole('CLIENT_ADMIN')")
+    @PreAuthorize("hasRole('client_admin')")
     @Operation(
             summary = "Find user by email",
             description = "Retrieves a user profile by email address. Requires admin role.",
@@ -75,14 +75,13 @@ class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden - Admin role required", content = @Content)
     })
     public ResponseEntity<GenericApiResponse<UserResponse>> findUserByEmail(@PathVariable String email) {
-        return userService.findByEmail(email)
-                .map(user -> ResponseEntity.ok(GenericApiResponse.success("User found", user, 200)))
-                .orElse(ResponseEntity.status(404)
-                        .body(GenericApiResponse.error("User not found with email: " + email, 404)));
+        var user = userService.findByEmail(email);
+
+        return ResponseEntity.ok(GenericApiResponse.success("User found", user, 200));
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('CLIENT_ADMIN') or #userId == authentication.principal.subject")
+    @PreAuthorize("hasRole('client_admin') or #userId == authentication.principal.subject")
     @Operation(
             summary = "Find user by user ID",
             description = "Retrieves a user profile by user ID. Admin can view any user, regular users can only view their own profile.",
@@ -95,9 +94,8 @@ class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden - Cannot view other users", content = @Content)
     })
     public ResponseEntity<GenericApiResponse<UserResponse>> findUserById(@PathVariable String userId) {
-        return userService.findByUserId(userId)
-                .map(user -> ResponseEntity.ok(GenericApiResponse.success("User found", user, 200)))
-                .orElse(ResponseEntity.status(404)
-                        .body(GenericApiResponse.error("User not found with id: " + userId, 404)));
+        var user = userService.findByUserId(userId);
+
+        return ResponseEntity.ok(GenericApiResponse.success("User found", user, 200));
     }
 }
