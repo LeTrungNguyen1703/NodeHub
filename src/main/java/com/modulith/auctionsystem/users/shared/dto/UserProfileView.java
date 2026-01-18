@@ -1,5 +1,4 @@
-package com.modulith.auctionsystem.users.shared.dtos;
-
+package com.modulith.auctionsystem.users.shared.dto;
 
 import com.modulith.auctionsystem.users.domain.User;
 
@@ -14,7 +13,7 @@ public record UserProfileView(String userId, String email, String username, Stri
     public static UserProfileView from(User user) {
         return new UserProfileView(
                 user.getUserId(),
-                user.getEmail(),
+                user.getEmail() != null ? user.getEmail().value() : null,
                 user.getUsername(),
                 user.getFullName(),
                 user.getPreferredLanguage()
