@@ -1,8 +1,8 @@
 package com.modulith.auctionsystem.users.internal;
 
 import com.modulith.auctionsystem.users.shared.AuthService;
-import com.modulith.auctionsystem.users.shared.dtos.LoginRequest;
-import com.modulith.auctionsystem.users.shared.dtos.LoginResponse;
+import com.modulith.auctionsystem.users.shared.dto.LoginRequest;
+import com.modulith.auctionsystem.users.shared.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

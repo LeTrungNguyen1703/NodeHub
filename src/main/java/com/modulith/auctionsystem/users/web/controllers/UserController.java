@@ -2,8 +2,8 @@ package com.modulith.auctionsystem.users.web.controllers;
 
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
 import com.modulith.auctionsystem.users.shared.UserService;
-import com.modulith.auctionsystem.users.shared.dtos.UpdateProfileRequest;
-import com.modulith.auctionsystem.users.shared.dtos.UserResponse;
+import com.modulith.auctionsystem.users.shared.dto.UpdateProfileRequest;
+import com.modulith.auctionsystem.users.shared.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
