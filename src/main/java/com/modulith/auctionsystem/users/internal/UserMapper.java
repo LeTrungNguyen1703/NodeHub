@@ -1,9 +1,9 @@
 package com.modulith.auctionsystem.users.internal;
 
 import com.modulith.auctionsystem.users.domain.User;
-import com.modulith.auctionsystem.users.web.dto.CreateUserRequest;
-import com.modulith.auctionsystem.users.web.dto.UpdateProfileRequest;
-import com.modulith.auctionsystem.users.web.dto.UserResponse;
+import com.modulith.auctionsystem.users.shared.dtos.CreateUserRequest;
+import com.modulith.auctionsystem.users.shared.dtos.UpdateProfileRequest;
+import com.modulith.auctionsystem.users.shared.dtos.UserResponse;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

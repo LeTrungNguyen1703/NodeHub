@@ -1,7 +1,8 @@
-package com.modulith.auctionsystem.users.domain;
+package com.modulith.auctionsystem.users.internal;
 
-import com.modulith.auctionsystem.users.web.dto.LoginRequest;
-import com.modulith.auctionsystem.users.web.dto.LoginResponse;
+import com.modulith.auctionsystem.users.shared.AuthService;
+import com.modulith.auctionsystem.users.shared.dtos.LoginRequest;
+import com.modulith.auctionsystem.users.shared.dtos.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+class AuthServiceImpl implements AuthService {
 
     @Value("${keycloak.token-uri:http://localhost:8180/realms/auction-system/protocol/openid-connect/token}")
     private String keycloakTokenUri;

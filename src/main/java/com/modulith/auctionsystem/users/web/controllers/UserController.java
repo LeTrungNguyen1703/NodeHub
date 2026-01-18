@@ -1,9 +1,9 @@
 package com.modulith.auctionsystem.users.web.controllers;
 
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
-import com.modulith.auctionsystem.users.UserService;
-import com.modulith.auctionsystem.users.web.dto.UpdateProfileRequest;
-import com.modulith.auctionsystem.users.web.dto.UserResponse;
+import com.modulith.auctionsystem.users.shared.UserService;
+import com.modulith.auctionsystem.users.shared.dtos.UpdateProfileRequest;
+import com.modulith.auctionsystem.users.shared.dtos.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User management", description = "APIs for managing users")
-public class UserController {
+class UserController {
 
     private final UserService userService;
 
