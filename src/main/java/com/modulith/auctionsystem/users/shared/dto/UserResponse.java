@@ -1,4 +1,4 @@
-package com.modulith.auctionsystem.users.shared.dtos;
+package com.modulith.auctionsystem.users.shared.dto;
 
 import com.modulith.auctionsystem.users.domain.Role;
 

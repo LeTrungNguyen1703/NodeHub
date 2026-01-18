@@ -5,8 +5,10 @@ import com.modulith.auctionsystem.users.domain.Role;
 import com.modulith.auctionsystem.users.domain.User;
 import com.modulith.auctionsystem.users.domain.UserRepository;
 import com.modulith.auctionsystem.users.shared.UserService;
-import com.modulith.auctionsystem.users.shared.dtos.UpdateProfileRequest;
-import com.modulith.auctionsystem.users.shared.dtos.UserResponse;
+import com.modulith.auctionsystem.users.domain.valueobject.Email;
+import com.modulith.auctionsystem.common.valueobject.Money;
+import com.modulith.auctionsystem.users.shared.dto.UpdateProfileRequest;
+import com.modulith.auctionsystem.users.shared.dto.UserResponse;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,14 +18,12 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,6 @@ class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
     UserMapper userMapper;
-    ApplicationEventPublisher events;
     Keycloak keycloak;
 
     @Value("${keycloak.admin.realm}")
@@ -48,11 +47,11 @@ class UserServiceImpl implements UserService {
         var user = userRepository.findById(id).orElseGet(
                 () -> User.builder()
                         .userId(id)
-                        .email(jwt.getClaimAsString("email"))
+                        .email(new Email(jwt.getClaimAsString("email")))
                         .username(jwt.getClaimAsString("preferred_username"))
                         .fullName(jwt.getClaimAsString("name"))
                         .role(extractRoleFromJwt(jwt))
-                        .balance(0L)
+                        .balance(Money.ZERO)
                         .build()
         );
         String avatarUrl = jwt.getClaimAsString("picture");
@@ -81,7 +80,7 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserResponse findByEmail(String email) {
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findByEmail(new Email(email))
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         return userMapper.toUserResponse(user);
     }

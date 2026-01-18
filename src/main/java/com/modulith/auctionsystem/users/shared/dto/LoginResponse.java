@@ -1,4 +1,4 @@
-package com.modulith.auctionsystem.users.shared.dtos;
+package com.modulith.auctionsystem.users.shared.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
