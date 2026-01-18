@@ -19,7 +19,10 @@ public class FileUploadService {
 
     public String uploadFile(MultipartFile file) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            Map params = ObjectUtils.asMap(
+                    "folder", "auction-system"
+            );
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
             return (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             log.error("File upload failed", e);

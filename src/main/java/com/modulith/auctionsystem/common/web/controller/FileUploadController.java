@@ -29,7 +29,8 @@ public class FileUploadController {
     FileUploadService fileUploadService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload a file", description = "Uploads a file to Cloudinary and returns the URL")
+    @Operation(summary = "Upload a file", description = "Uploads a file to Cloudinary and returns the URL. " +
+            "Example: You will get the URL and call patch user/me with avatarUrl to set your profile picture.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "File uploaded successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid file", content = @Content),
