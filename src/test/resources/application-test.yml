@@ -29,6 +29,11 @@ keycloak:
   token-uri: http://localhost:8180/realms/auction-system/protocol/openid-connect/token
   client-id: auction-api
   client-secret: test-secret
+  admin:
+    server-url: http://localhost:8180
+    realm: auction-system
+    client-id: auction-api
+    client-secret: test-secret
 
 server:
   port: 0

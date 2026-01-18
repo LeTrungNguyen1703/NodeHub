@@ -41,4 +41,9 @@ class TestcontainersConfiguration {
         return jwtDecoder;
     }
 
+    @Bean
+    public com.cloudinary.Cloudinary cloudinary() {
+        return mock(com.cloudinary.Cloudinary.class);
+    }
+
 }
