@@ -1,4 +1,4 @@
-package com.modulith.auctionsystem.users.domain.models;
+package com.modulith.auctionsystem.users.shared.dtos;
 
 
 import com.modulith.auctionsystem.users.domain.User;
