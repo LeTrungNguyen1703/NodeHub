@@ -3,7 +3,6 @@ package com.modulith.auctionsystem.users.domain;
 import com.modulith.auctionsystem.common.domain.AbstractAuditableEntity;
 import com.modulith.auctionsystem.users.domain.valueobject.Address;
 import com.modulith.auctionsystem.users.domain.valueobject.Email;
-import com.modulith.auctionsystem.common.valueobject.Money;
 import com.modulith.auctionsystem.users.domain.valueobject.PhoneNumber;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -74,12 +73,6 @@ public class User extends AbstractAuditableEntity {
 
     @Column(name = "avatar")
     private String avatar;
-
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "amount", column = @Column(name = "balance", nullable = false))
-    })
-    private Money balance;
 
     @NotNull
     @Enumerated(EnumType.STRING)
