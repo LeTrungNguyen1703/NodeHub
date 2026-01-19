@@ -77,7 +77,7 @@ services:
       - '${BACKEND_PORT:-8090}:8080'
     depends_on:
       mysql:
-        condition: service_started
+        condition: service_healthy
       keycloak:
         condition: service_healthy
     healthcheck:
