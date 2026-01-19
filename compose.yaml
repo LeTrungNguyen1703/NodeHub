@@ -2,7 +2,7 @@ services:
   # MySQL Service (Your Database)
   mysql:
     image: 'mysql:8.0'
-    container_name: auction-mysql
+    container_name: note-mysql
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -30,6 +30,14 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_PROXY: "edge"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HOSTNAME: "${APP_BASE_URL:-http://localhost:8180}"
+      KC_HOSTNAME_URL: "${APP_BASE_URL:-http://localhost:8180}"
+      KC_HOSTNAME_ADMIN_URL: "${APP_BASE_URL:-http://localhost:8180}"
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     # "start-dev" is optimized for development (HTTP only, no strict HTTPS)
     command: start-dev
     ports:
@@ -68,13 +76,15 @@ services:
   backend:
     image: ${DOCKER_HUB_USERNAME}/${DOCKER_HUB_REPO}:latest
     pull_policy: always
-    container_name: auction-backend
+    container_name: note-backend
     restart: unless-stopped
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:${MYSQL_DOCKER_PORT}/${MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/auction-system
+      # JWT Issuer must match what the browser uses (external URL)
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8180/realms/auction-system
+      # JWK Set can use internal Docker network (for fetching public keys)
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/auction-system/protocol/openid-connect/certs
       KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/auction-system/protocol/openid-connect/token
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
