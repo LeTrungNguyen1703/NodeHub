@@ -17,7 +17,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface UserMapper {
 
-    @Mapping(target = "balance", source = "balance.amount")
     @Mapping(target = "email", source = "email.value")
     @Mapping(target = "phone", source = "phone.value")
     @Mapping(target = "address", source = "address.value")
