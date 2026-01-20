@@ -6,7 +6,6 @@ import com.modulith.auctionsystem.users.domain.User;
 import com.modulith.auctionsystem.users.domain.UserRepository;
 import com.modulith.auctionsystem.users.shared.UserService;
 import com.modulith.auctionsystem.users.domain.valueobject.Email;
-import com.modulith.auctionsystem.common.valueobject.Money;
 import com.modulith.auctionsystem.users.shared.dto.UpdateProfileRequest;
 import com.modulith.auctionsystem.users.shared.dto.UserResponse;
 import jakarta.ws.rs.NotFoundException;
@@ -51,7 +50,6 @@ class UserServiceImpl implements UserService {
                         .username(jwt.getClaimAsString("preferred_username"))
                         .fullName(jwt.getClaimAsString("name"))
                         .role(extractRoleFromJwt(jwt))
-                        .balance(Money.ZERO)
                         .build()
         );
         String avatarUrl = jwt.getClaimAsString("picture");
