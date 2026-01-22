@@ -2,10 +2,6 @@
 
 [![Vietnamese](https://img.shields.io/badge/Language-Vietnamese-red.svg)](README.md)
 
-**NoteHub** is an effective team collaboration platform that helps team members collaborate and manage tasks easily. The project is built with modern architecture, ensuring scalability and high performance.
-
----
-
 ## 🚀 Project Overview
 
 NoteHub is a modern web application designed to optimize teamwork processes and project management. The system provides a centralized platform helping team members easily collaborate, share information, and track work progress.

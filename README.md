@@ -1,11 +1,6 @@
 # NoteHub
 
 [![English](https://img.shields.io/badge/Language-English-blue.svg)](README_EN.md)
-
-**NoteHub** là một nền tảng hỗ trợ làm việc nhóm hiệu quả, giúp các thành viên trong team cộng tác và quản lý công việc một cách dễ dàng. Dự án được xây dựng với kiến trúc hiện đại, đảm bảo khả năng mở rộng và hiệu năng cao.
-
----
-
 ## 🚀 Giới thiệu (Project Overview)
 
 NoteHub là một ứng dụng web hiện đại được thiết kế để tối ưu hóa quy trình làm việc nhóm và quản lý dự án. Hệ thống cung cấp một nền tảng tập trung giúp các thành viên team dễ dàng cộng tác, chia sẻ thông tin, và theo dõi tiến độ công việc.
