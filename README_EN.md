@@ -149,75 +149,18 @@ git clone <repository-url>
 cd NodeHub
 ```
 
-### 2. Configure Environment Variables
+### 2. Config environment variables
 
 **Important**: Before running the application, you must configure environment variables.
 
-#### Option 1: Create `.env` file from template
-If the project has a `.env.example` file, copy and edit it:
+### Create `.env` file from template
+Project includes a sample `.env.example` file, please copy and edit it:
 ```bash
-# Copy template file
+# Copy the sample file
 copy .env.example .env
 
-# Then edit the .env file with your actual information
+# After that, edit the .env file with your actual information
 ```
-
-#### Option 2: Create `.env` file manually
-Create a `.env` file at the **root directory** of the project (`NodeHub/`) with the following content:
-
-```env
-# ============================================
-# Docker Hub Configuration
-# ============================================
-DOCKER_HUB_USERNAME=your_docker_username
-DOCKER_HUB_REPO=note-backend
-
-# ============================================
-# Database Configuration (MySQL)
-# ============================================
-MYSQL_DATABASE=notehub_db
-MYSQL_USER=admin
-MYSQL_PASSWORD=secret
-MYSQL_ROOT_PASSWORD=root_secret
-MYSQL_LOCAL_PORT=3306
-MYSQL_DOCKER_PORT=3306
-
-# ============================================
-# Keycloak Configuration
-# ============================================
-KEYCLOAK_ADMIN=admin
-KEYCLOAK_ADMIN_PASSWORD=admin
-KEYCLOAK_PORT=8180
-KEYCLOAK_CLIENT_SECRET=your_client_secret_here
-
-# ============================================
-# Google OAuth Configuration (Optional)
-# To get: https://console.cloud.google.com/
-# ============================================
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# ============================================
-# Cloudinary Configuration
-# To get: https://cloudinary.com/console
-# ============================================
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# ============================================
-# Application Configuration
-# ============================================
-APP_BASE_URL=http://localhost:8180
-BACKEND_PORT=8080
-```
-
-**Note**:
-*   Replace `your_*` values with actual information.
-*   To get **Google OAuth credentials**: Go to [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials.
-*   To get **Cloudinary credentials**: Register at [Cloudinary](https://cloudinary.com/) and get info from Dashboard.
-*   The `.env` file **must not be committed** to Git (already in `.gitignore`).
-
 ### 3. Install Dependencies
 
 #### Frontend (Required for Frontend Developers)

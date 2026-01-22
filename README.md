@@ -153,71 +153,14 @@ cd NodeHub
 
 **Quan trọng**: Trước khi chạy ứng dụng, bạn phải cấu hình các biến môi trường.
 
-#### Cách 1: Tạo file `.env` từ template
-Nếu project có sẵn file `.env.example`, hãy copy và chỉnh sửa:
+#### Tạo file `.env` từ template
+Project có sẵn file `.env.example`, hãy copy và chỉnh sửa:
 ```bash
 # Copy file mẫu
 copy .env.example .env
 
 # Sau đó chỉnh sửa file .env với thông tin thực tế của bạn
 ```
-
-#### Cách 2: Tạo file `.env` thủ công
-Tạo file `.env` tại **thư mục gốc** của dự án (`NodeHub/`) với nội dung sau:
-
-```env
-# ============================================
-# Docker Hub Configuration
-# ============================================
-DOCKER_HUB_USERNAME=your_docker_username
-DOCKER_HUB_REPO=note-backend
-
-# ============================================
-# Database Configuration (MySQL)
-# ============================================
-MYSQL_DATABASE=notehub_db
-MYSQL_USER=admin
-MYSQL_PASSWORD=secret
-MYSQL_ROOT_PASSWORD=root_secret
-MYSQL_LOCAL_PORT=3306
-MYSQL_DOCKER_PORT=3306
-
-# ============================================
-# Keycloak Configuration
-# ============================================
-KEYCLOAK_ADMIN=admin
-KEYCLOAK_ADMIN_PASSWORD=admin
-KEYCLOAK_PORT=8180
-KEYCLOAK_CLIENT_SECRET=your_client_secret_here
-
-# ============================================
-# Google OAuth Configuration (Optional)
-# Để lấy: https://console.cloud.google.com/
-# ============================================
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# ============================================
-# Cloudinary Configuration
-# Để lấy: https://cloudinary.com/console
-# ============================================
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# ============================================
-# Application Configuration
-# ============================================
-APP_BASE_URL=http://localhost:8180
-BACKEND_PORT=8080
-```
-
-**Lưu ý**:
-*   Thay thế các giá trị `your_*` bằng thông tin thực tế.
-*   Để lấy **Google OAuth credentials**: Truy cập [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials.
-*   Để lấy **Cloudinary credentials**: Đăng ký tại [Cloudinary](https://cloudinary.com/) và lấy thông tin từ Dashboard.
-*   File `.env` **không được commit** lên Git (đã có trong `.gitignore`).
-
 ### 3. Cài đặt Dependencies
 
 #### Frontend (Bắt buộc cho Frontend Developers)
