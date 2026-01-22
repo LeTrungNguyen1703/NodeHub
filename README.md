@@ -6,36 +6,61 @@
 
 ## 🚀 Giới thiệu (Project Overview)
 
-NoteHub cung cấp các công cụ cần thiết để tối ưu hóa quy trình làm việc nhóm.
-**Các tính năng chính:**
-*   Quản lý người dùng và xác thực, phân quyền bảo mật (SSO với Keycloak).
-*   Giao diện tương tác mượt mà, thân thiện với người dùng.
-*   Hệ thống Backend mạnh mẽ dựa trên kiến trúc Spring Modulith.
-*   Tích hợp Cloudinary để quản lý tài nguyên media.
+NoteHub là một ứng dụng web hiện đại được thiết kế để tối ưu hóa quy trình làm việc nhóm và quản lý dự án. Hệ thống cung cấp một nền tảng tập trung giúp các thành viên team dễ dàng cộng tác, chia sẻ thông tin, và theo dõi tiến độ công việc.
+
+### Các tính năng chính:
+*   **Quản lý người dùng & Xác thực bảo mật**: Hệ thống SSO (Single Sign-On) tích hợp Keycloak với khả năng đăng nhập qua Google OAuth.
+*   **Phân quyền linh hoạt**: Kiểm soát truy cập dựa trên vai trò (Role-Based Access Control) đảm bảo an toàn dữ liệu.
+*   **Giao diện người dùng hiện đại**: UI/UX thân thiện được xây dựng với React 19, Mantine UI và TailwindCSS.
+*   **Kiến trúc Modulith**: Backend được thiết kế theo Spring Modulith đảm bảo tính module hóa, dễ bảo trì và mở rộng.
+*   **Quản lý tài nguyên Media**: Tích hợp Cloudinary để lưu trữ và xử lý hình ảnh, video một cách tối ưu.
+*   **Real-time Communication**: Hỗ trợ WebSocket cho các tính năng thời gian thực.
+*   **API Documentation**: Tài liệu API tự động sinh ra bằng Swagger/OpenAPI.
 
 ---
 
 ## 🛠 Công nghệ sử dụng (Tech Stack)
 
-Dự án sử dụng các công nghệ tiên tiến nhất hiện nay:
+Dự án sử dụng các công nghệ tiên tiến nhất hiện nay để đảm bảo hiệu năng cao và khả năng mở rộng:
 
 ### Backend
-*   **Ngôn ngữ:** Java 21
-*   **Framework:** Spring Boot 3.5.9, Spring Modulith 1.4.6
-*   **Database:** MySQL 8.0 (JPA/Hibernate)
-*   **Security:** Spring Security (OAuth2 Resource Server), Keycloak
-*   **Tools:** Flyway (Migration), MapStruct, SpringDoc OpenAPI (Swagger)
+*   **Ngôn ngữ**: Java 21 (LTS)
+*   **Framework chính**: Spring Boot 3.5.9
+*   **Kiến trúc**: Spring Modulith 1.4.6 (Modular Monolith Architecture)
+*   **Database**: MySQL 8.0
+*   **ORM**: Spring Data JPA / Hibernate
+*   **Security**: 
+    *   Spring Security 
+    *   OAuth2 Resource Server
+    *   Keycloak 26.0.7 (Identity & Access Management)
+*   **Database Migration**: Flyway
+*   **Object Mapping**: MapStruct 1.6.3
+*   **API Documentation**: SpringDoc OpenAPI 2.8.15 (Swagger UI)
+*   **Cloud Storage**: Cloudinary (Image & Video Management)
+*   **Email**: Spring Mail
+*   **Real-time**: WebSocket Support
 
 ### Frontend
-*   **Framework:** React 19
-*   **Build Tool:** Vite
-*   **Language:** TypeScript
-*   **Styling:** TailwindCSS, Mantine UI
-*   **State/Data Fetching:** Axios, React Query (Orval generated)
+*   **Framework**: React 19.2.0 (Latest)
+*   **Language**: TypeScript
+*   **Build Tool**: Vite
+*   **UI Framework**: Mantine UI 8.3.12 (Complete component library)
+*   **Styling**: TailwindCSS 4.1.18
+*   **HTTP Client**: Axios 1.13.2
+*   **State Management**: React Query (TanStack Query)
+*   **API Client Generation**: Orval (Auto-generated from OpenAPI)
+*   **Authentication**: react-oidc-context 3.3.0
+*   **Routing**: React Router 7.12.0
+*   **Rich Text Editor**: Tiptap 3.15.3
+*   **Charts**: Recharts 3.6.0
 
-### Infrastructure
-*   **Containerization:** Docker, Docker Compose
-*   **Identity Provider:** Keycloak 26.5
+### Infrastructure & DevOps
+*   **Containerization**: Docker & Docker Compose
+*   **Identity Provider**: Keycloak 26.5
+*   **Testing**: 
+    *   JUnit 5
+    *   Testcontainers
+    *   Spring Modulith Tests
 
 ---
 
@@ -43,21 +68,63 @@ Dự án sử dụng các công nghệ tiên tiến nhất hiện nay:
 
 ```
 NodeHub/
-├── src/
+├── src/                          # Mã nguồn Backend (Java)
 │   ├── main/
-│   │   ├── java/         # Mã nguồn Java chính (Domain, API, Logic)
-│   │   └── resources/    # Cấu hình (application.yml), DB Migration (Flyway)
-│   └── test/             # Testing
-│       └── java/         # Unit & Integration Tests (Testcontainers, Modulith)
-├── frontend/             # Source code Frontend (ReactJS)
-│   ├── src/              # Components, Pages, Hooks
-│   ├── public/           # Static assets
-│   └── package.json      # Dependencies frontend
-├── docker-data/          # Dữ liệu persistent cho Docker (MySQL, Keycloak)
-├── keycloak-config/      # Cấu hình import cho Keycloak
-├── compose.yaml          # File cấu hình Docker Compose
-└── build.gradle          # Quản lý dependencies Backend
+│   │   ├── java/                # Source code chính
+│   │   │   └── com/modulith/auctionsystem/
+│   │   │       ├── AuctionSystemApplication.java    # Entry point của ứng dụng
+│   │   │       ├── common/                          # Shared components (Config, Models, Utils)
+│   │   │       └── users/                           # User module (theo kiến trúc Modulith)
+│   │   └── resources/           # Configuration files & Resources
+│   │       ├── application.yml  # Main configuration file
+│   │       └── db/migration/    # Flyway migration scripts (SQL)
+│   └── test/                    # Test code
+│       ├── java/                # Unit & Integration Tests
+│       └── resources/           # Test configurations
+│
+├── frontend/                    # Source code Frontend (React + TypeScript)
+│   ├── src/                    # Mã nguồn chính
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Page components (Routes)
+│   │   ├── auth/               # Authentication logic & OIDC config
+│   │   ├── middlewares/        # Route guards & middleware
+│   │   ├── assets/             # Static assets (images, icons)
+│   │   ├── api.ts              # API client (auto-generated by Orval)
+│   │   └── main.tsx            # Entry point của React app
+│   ├── public/                 # Public static files
+│   │   ├── callback.html       # OIDC callback page
+│   │   └── silent-check-sso.html  # Silent SSO refresh
+│   ├── package.json            # Frontend dependencies
+│   ├── vite.config.ts          # Vite configuration
+│   ├── orval.config.ts         # Orval API generator config
+│   └── tsconfig.json           # TypeScript configuration
+│
+├── docker-data/                # Docker persistent data (được tạo tự động)
+│   ├── mysql_data/             # MySQL database files
+│   └── keycloak/               # Keycloak data
+│
+├── keycloak-config/            # Keycloak configuration
+│   └── realm-export.json       # Realm configuration (users, clients, roles)
+│
+├── keycloak-theme/             # Custom Keycloak theme
+│   └── keycloak-theme-for-kc-all-other-versions.jar
+│
+├── gradle/                     # Gradle wrapper files
+├── build.gradle                # Backend dependencies & build configuration
+├── settings.gradle             # Gradle project settings
+├── compose.yaml                # Docker Compose configuration
+├── Dockerfile                  # Backend Docker image definition
+└── README.md                   # Tài liệu dự án (file này)
 ```
+
+### Giải thích các thư mục quan trọng:
+
+*   **`src/main/java/`**: Chứa toàn bộ business logic của Backend. Dự án sử dụng kiến trúc **Spring Modulith**, các module được tổ chức độc lập (ví dụ: `users`, `common`).
+*   **`src/main/resources/db/migration/`**: Flyway migration scripts để quản lý database schema versioning.
+*   **`frontend/src/`**: Source code React application, bao gồm components, pages, authentication logic.
+*   **`frontend/src/auth/`**: Xử lý logic đăng nhập, OAuth2/OIDC với Keycloak.
+*   **`docker-data/`**: Thư mục này chứa dữ liệu persistent của Docker containers (MySQL, Keycloak). **Không commit vào Git**.
+*   **`keycloak-config/realm-export.json`**: File cấu hình Keycloak realm (users, clients, roles) - được import tự động khi khởi động lần đầu.
 
 ---
 
@@ -81,14 +148,31 @@ cd NodeHub
 ```
 
 ### 2. Cấu hình biến môi trường
-Tạo file `.env` tại thư mục gốc của dự án. Bạn có thể copy từ file mẫu (nếu có) hoặc cấu hình các biến quan trọng sau (tham khảo `compose.yaml`):
+
+**Quan trọng**: Trước khi chạy ứng dụng, bạn phải cấu hình các biến môi trường.
+
+#### Cách 1: Tạo file `.env` từ template
+Nếu project có sẵn file `.env.example`, hãy copy và chỉnh sửa:
+```bash
+# Copy file mẫu
+copy .env.example .env
+
+# Sau đó chỉnh sửa file .env với thông tin thực tế của bạn
+```
+
+#### Cách 2: Tạo file `.env` thủ công
+Tạo file `.env` tại **thư mục gốc** của dự án (`NodeHub/`) với nội dung sau:
 
 ```env
-# Docker Hub (Để pull image Backend)
+# ============================================
+# Docker Hub Configuration
+# ============================================
 DOCKER_HUB_USERNAME=your_docker_username
 DOCKER_HUB_REPO=note-backend
 
-# Database
+# ============================================
+# Database Configuration (MySQL)
+# ============================================
 MYSQL_DATABASE=notehub_db
 MYSQL_USER=admin
 MYSQL_PASSWORD=secret
@@ -96,93 +180,427 @@ MYSQL_ROOT_PASSWORD=root_secret
 MYSQL_LOCAL_PORT=3306
 MYSQL_DOCKER_PORT=3306
 
-# Keycloak
+# ============================================
+# Keycloak Configuration
+# ============================================
 KEYCLOAK_ADMIN=admin
 KEYCLOAK_ADMIN_PASSWORD=admin
 KEYCLOAK_PORT=8180
-KEYCLOAK_CLIENT_SECRET=your_client_secret
+KEYCLOAK_CLIENT_SECRET=your_client_secret_here
 
-# Google OAuth (Optional)
+# ============================================
+# Google OAuth Configuration (Optional)
+# Để lấy: https://console.cloud.google.com/
+# ============================================
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 
-# Cloudinary
+# ============================================
+# Cloudinary Configuration
+# Để lấy: https://cloudinary.com/console
+# ============================================
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-# App
+# ============================================
+# Application Configuration
+# ============================================
 APP_BASE_URL=http://localhost:8180
 BACKEND_PORT=8080
 ```
 
+**Lưu ý**:
+*   Thay thế các giá trị `your_*` bằng thông tin thực tế.
+*   Để lấy **Google OAuth credentials**: Truy cập [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials.
+*   Để lấy **Cloudinary credentials**: Đăng ký tại [Cloudinary](https://cloudinary.com/) và lấy thông tin từ Dashboard.
+*   File `.env` **không được commit** lên Git (đã có trong `.gitignore`).
+
 ### 3. Cài đặt Dependencies
 
-**Frontend (Bắt buộc cho FE Dev):**
+#### Frontend (Bắt buộc cho Frontend Developers)
 ```bash
 cd frontend
 npm install
-# Hoặc nếu dùng bun
+
+# Hoặc nếu dùng Bun (nhanh hơn)
 bun install
 ```
 
-**Backend (Chỉ dành cho Backend Dev):**
-Nếu bạn chỉ làm Frontend, bạn có thể bỏ qua bước này vì Backend sẽ chạy qua Docker Image.
+#### Backend (Chỉ dành cho Backend Developers)
+Nếu bạn chỉ làm Frontend, bạn có thể **bỏ qua bước này** vì Backend sẽ chạy qua Docker Image có sẵn.
+
 ```bash
+# Build project (skip tests để build nhanh hơn)
 ./gradlew build -x test
+
+# Hoặc build kèm tests
+./gradlew build
 ```
 
 ---
 
 ## ▶️ Hướng dẫn chạy (How to Run)
 
-### Cách 1: Chạy toàn bộ Backend bằng Docker (Dành cho Frontend Team)
-Backend đã được đóng gói sẵn trên Docker Hub. Bạn chỉ cần chạy lệnh sau để khởi động toàn bộ hệ thống (MySQL, Keycloak, Backend App).
+### Cách 1: Chạy toàn bộ hệ thống bằng Docker (Khuyến nghị cho Frontend Team)
 
-**1. Khởi động Backend & Services:**
+Đây là cách **đơn giản nhất** để chạy project. Backend đã được đóng gói sẵn trên Docker Hub, bạn chỉ cần pull về và chạy.
+
+#### Bước 1: Khởi động toàn bộ hệ thống
 ```bash
 docker-compose up -d
 ```
-*   Lệnh này sẽ tự động pull image mới nhất của Backend về máy.
-*   Backend API: `http://localhost:8080`
-*   Keycloak: `http://localhost:8180`
 
-**2. Chạy Frontend:**
-Mở một terminal mới:
+Lệnh này sẽ tự động:
+*   Pull Backend image từ Docker Hub (nếu chưa có)
+*   Khởi động MySQL database
+*   Khởi động Keycloak (Identity Provider)
+*   Khởi động Backend application
+
+**Kiểm tra trạng thái containers:**
+```bash
+docker-compose ps
+```
+
+Các services sẽ chạy tại:
+*   **Backend API**: http://localhost:8080
+*   **Swagger UI (API Docs)**: http://localhost:8080/swagger-ui/index.html
+*   **Keycloak Admin Console**: http://localhost:8180
+    *   Username: `admin`
+    *   Password: `admin` (hoặc theo cấu hình trong `.env`)
+
+#### Bước 2: Chạy Frontend
+Mở một terminal mới và chạy:
 ```bash
 cd frontend
 npm run dev
+
+# Hoặc với Bun
+bun run dev
 ```
-Truy cập Frontend tại: `http://localhost:5173`
+
+✅ **Truy cập ứng dụng tại**: http://localhost:5173
+
+---
 
 ### Cách 2: Chạy môi trường Development (Dành cho Backend Team)
-Nếu bạn cần sửa code Backend, hãy chạy theo cách này.
 
-**1. Khởi động Infrastructure (MySQL, Keycloak):**
+Sử dụng cách này khi bạn cần **chỉnh sửa code Backend** và muốn test ngay lập tức.
+
+#### Bước 1: Khởi động Infrastructure (MySQL + Keycloak)
 ```bash
 docker-compose up -d mysql keycloak
 ```
 
-**2. Chạy Backend (Local):**
+Đợi khoảng 30-60 giây để các services khởi động hoàn tất.
+
+#### Bước 2: Chạy Backend trên máy local
 ```bash
+# Chạy với Gradle wrapper
 ./gradlew bootRun
+
+# Hoặc nếu đã build sẵn
+java -jar build/libs/*.jar
 ```
 
-**3. Chạy Frontend:**
+Backend sẽ chạy tại: http://localhost:8080
+
+#### Bước 3: Chạy Frontend
 ```bash
 cd frontend
 npm run dev
+```
+
+Frontend sẽ chạy tại: http://localhost:5173
+
+---
+
+### Các lệnh Docker hữu ích
+
+```bash
+# Xem logs của tất cả services
+docker-compose logs -f
+
+# Xem logs của một service cụ thể
+docker-compose logs -f backend
+docker-compose logs -f mysql
+docker-compose logs -f keycloak
+
+# Dừng tất cả services
+docker-compose down
+
+# Dừng và xóa toàn bộ data (cẩn thận!)
+docker-compose down -v
+
+# Khởi động lại một service cụ thể
+docker-compose restart backend
+
+# Build lại Backend image (nếu có thay đổi)
+docker-compose build backend
 ```
 
 ---
 
 ## ❓ Troubleshooting (Các lỗi thường gặp)
 
-1.  **Lỗi không pull được image:**
-    *   Kiểm tra biến `DOCKER_HUB_USERNAME` và `DOCKER_HUB_REPO` trong file `.env` đã chính xác chưa.
+### 1. **Lỗi không pull được Docker image**
+**Triệu chứng:**
+```
+Error response from daemon: pull access denied for xxx/note-backend
+```
 
-2.  **Lỗi cổng (Port Conflict):**
-    *   Nếu cổng `3306` (MySQL) hoặc `8080`/`8180` (Keycloak) đã bị chiếm dụng, hãy đổi cổng trong file `.env` hoặc tắt service đang chạy.
+**Giải pháp:**
+*   Kiểm tra biến `DOCKER_HUB_USERNAME` và `DOCKER_HUB_REPO` trong file `.env` đã chính xác chưa.
+*   Đảm bảo image đã được push lên Docker Hub.
+*   Nếu repository là private, hãy đăng nhập Docker Hub trước:
+  ```bash
+  docker login
+  ```
 
 ---
+
+### 2. **Lỗi cổng bị chiếm dụng (Port Conflict)**
+**Triệu chứng:**
+```
+Bind for 0.0.0.0:8080 failed: port is already allocated
+```
+
+**Giải pháp:**
+
+**Cách 1: Thay đổi cổng trong `.env`**
+```env
+MYSQL_LOCAL_PORT=3307  # Thay vì 3306
+BACKEND_PORT=8081       # Thay vì 8080
+KEYCLOAK_PORT=8181      # Thay vì 8180
+```
+
+**Cách 2: Tìm và tắt process đang chiếm cổng (Windows)**
+```powershell
+# Kiểm tra process đang dùng cổng 8080
+netstat -ano | findstr :8080
+
+# Kill process (thay <PID> bằng số process ID tìm được)
+taskkill /PID <PID> /F
+```
+
+**Cách 3: Tìm và tắt process (Linux/Mac)**
+```bash
+# Kiểm tra process
+lsof -i :8080
+
+# Kill process
+kill -9 <PID>
+```
+
+---
+
+### 3. **Lỗi kết nối Database**
+**Triệu chứng:**
+```
+Communications link failure
+Unable to connect to MySQL
+```
+
+**Giải pháp:**
+*   Đảm bảo MySQL container đã chạy:
+  ```bash
+  docker-compose ps mysql
+  ```
+*   Kiểm tra logs của MySQL:
+  ```bash
+  docker-compose logs mysql
+  ```
+*   Restart MySQL container:
+  ```bash
+  docker-compose restart mysql
+  ```
+*   Nếu vẫn lỗi, xóa data và khởi động lại:
+  ```bash
+  docker-compose down -v
+  docker-compose up -d
+  ```
+
+---
+
+### 4. **Frontend không kết nối được với Backend API**
+**Triệu chứng:**
+*   `Network Error` hoặc `CORS Error` trên browser console
+*   API calls trả về 404 hoặc không có response
+
+**Giải pháp:**
+*   Kiểm tra Backend đã chạy chưa: http://localhost:8080
+*   Kiểm tra cấu hình API base URL trong `frontend/src/axios.config.ts`
+*   Kiểm tra CORS configuration trong Backend (`application.yml`)
+*   Clear browser cache và restart Frontend:
+  ```bash
+  # Trong thư mục frontend
+  rm -rf node_modules/.vite
+  npm run dev
+  ```
+
+---
+
+### 5. **Lỗi xác thực Keycloak (Login không thành công)**
+**Triệu chứng:**
+*   Redirect loop khi đăng nhập
+*   `Invalid redirect_uri` error
+*   Token expired ngay lập tức
+
+**Giải pháp:**
+*   Kiểm tra Keycloak đã khởi động: http://localhost:8180
+*   Đảm bảo `realm-export.json` đã được import (xem logs Keycloak)
+*   Kiểm tra cấu hình OIDC trong `frontend/src/auth/oidc.config.ts`
+*   Verify redirect URIs trong Keycloak Admin Console:
+    *   Login: http://localhost:5173/* hoặc http://localhost:5173/callback.html
+    *   Web Origins: http://localhost:5173
+*   Clear browser cookies/session và thử lại
+
+---
+
+### 6. **Lỗi build Frontend**
+**Triệu chứng:**
+```
+Module not found
+TypeScript compilation errors
+```
+
+**Giải pháp:**
+```bash
+# Xóa node_modules và reinstall
+cd frontend
+rm -rf node_modules
+rm package-lock.json  # hoặc bun.lock
+npm install
+
+# Clear cache
+npm cache clean --force
+
+# Nếu dùng Bun
+rm -rf node_modules
+rm bun.lock
+bun install
+```
+
+---
+
+### 7. **Lỗi build Backend (Gradle)**
+**Triệu chứng:**
+```
+Compilation failed
+Could not resolve dependencies
+```
+
+**Giải pháp:**
+```bash
+# Clean và rebuild
+./gradlew clean build
+
+# Clear Gradle cache (nếu cần)
+rm -rf ~/.gradle/caches/
+
+# Build lại
+./gradlew build --refresh-dependencies
+```
+
+---
+
+### 8. **Docker Compose không tìm thấy file `.env`**
+**Triệu chứng:**
+```
+WARNING: The MYSQL_PASSWORD variable is not set
+```
+
+**Giải pháp:**
+*   Đảm bảo file `.env` nằm ở **thư mục gốc** của project (cùng cấp với `compose.yaml`)
+*   Kiểm tra tên file chính xác là `.env` (không phải `.env.txt` hay `.env.example`)
+*   Restart Docker Compose sau khi tạo file `.env`:
+  ```bash
+  docker-compose down
+  docker-compose up -d
+  ```
+
+---
+
+### 9. **Cloudinary upload không hoạt động**
+**Triệu chứng:**
+*   Upload hình ảnh thất bại
+*   `401 Unauthorized` khi upload
+
+**Giải pháp:**
+*   Kiểm tra credentials trong `.env`:
+  ```env
+  CLOUDINARY_CLOUD_NAME=your_cloud_name
+  CLOUDINARY_API_KEY=your_api_key
+  CLOUDINARY_API_SECRET=your_api_secret
+  ```
+*   Đảm bảo thông tin từ [Cloudinary Dashboard](https://cloudinary.com/console) chính xác
+*   Restart Backend sau khi cập nhật `.env`
+
+---
+
+### 10. **Database migration bị lỗi (Flyway)**
+**Triệu chứng:**
+```
+Migration checksum mismatch
+Flyway validation failed
+```
+
+**Giải pháp:**
+*   **Môi trường Development**: Reset database
+  ```bash
+  docker-compose down -v
+  docker-compose up -d
+  ```
+*   **Môi trường Production**: Sử dụng Flyway repair (cẩn thận!)
+  ```bash
+  ./gradlew flywayRepair
+  ```
+
+---
+
+### 🆘 Vẫn gặp vấn đề?
+
+Nếu các giải pháp trên không giải quyết được vấn đề:
+
+1. **Kiểm tra logs chi tiết:**
+   ```bash
+   # Backend logs
+   docker-compose logs -f backend
+   
+   # Tất cả services
+   docker-compose logs -f
+   ```
+
+2. **Kiểm tra version của các tools:**
+   ```bash
+   docker --version
+   docker-compose --version
+   node --version
+   java --version
+   ```
+
+3. **Restart toàn bộ hệ thống:**
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
+
+4. **Liên hệ team leader** hoặc tạo issue trên repository với đầy đủ thông tin:
+   *   Mô tả lỗi chi tiết
+   *   Error logs
+   *   Các bước đã thử
+   *   Môi trường (OS, versions)
+
+---
+
+## 📚 Tài liệu bổ sung (Additional Documentation)
+
+*   **API Documentation (Swagger)**: http://localhost:8080/swagger-ui/index.html
+*   **Keycloak Admin Console**: http://localhost:8180/admin
+*   **Spring Modulith Documentation**: https://docs.spring.io/spring-modulith/reference/
+*   **React Router v7**: https://reactrouter.com/
+*   **Mantine UI**: https://mantine.dev/
+
+---
+
 **Happy Coding! 🚀**
