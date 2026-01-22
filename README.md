@@ -1,143 +1,188 @@
-Truy cập localhost:8180 để tạo 2 user mẫu là kenshirn và admin. T sẽ quay clip hướng dẫn.
-
-🚀 Quy trình làm việc (Git Workflow) - Terminal & IntelliJ
-
-Tài liệu này hướng dẫn quy trình Feature Branch Workflow chuẩn cho team. Bạn có thể chọn dùng dòng lệnh (Terminal) hoặc giao diện IntelliJ IDEA tùy thích.
-
-🛑 Nguyên tắc vàng (Rules)
-
-KHÔNG push thẳng lên main.
-
-Code phải đi qua Pull Request (PR) và được Review.
-
-Chỉ Merge khi Build & Test báo xanh (Pass).
-
-🛠 Hướng dẫn từng bước (Step-by-step)
-
-Bước 1: Đồng bộ code mới nhất (Sync Main)
-
-Trước khi làm task mới, phải đảm bảo code dưới máy bạn là mới nhất từ server.
-
-💻 Cách 1: Dùng Terminal
-
-git checkout main
-git pull origin main
-
-
-🧠 Cách 2: Dùng IntelliJ IDEA
-
-Nhìn góc trên cùng bên phải (hoặc dưới cùng phải), bấm vào tên nhánh hiện tại.
-
-Chọn Local > main -> Chọn Checkout.
-
-Bấm nút Update Project (Mũi tên màu xanh dương ⬇️ ở thanh công cụ phía trên hoặc phím tắt Ctrl + T).
-
-Chọn OK.
-
-Bước 2: Tạo nhánh mới (Create Branch)
-
-Tạo "vùng đất riêng" để code, không ảnh hưởng đến ai.
-
-Feature: feature/ten-tinh-nang (VD: feature/login-page)
-
-Fix bug: fix/ten-loi (VD: fix/nav-bar-color)
-
-💻 Cách 1: Dùng Terminal
-
-git checkout -b feature/ten-tinh-nang
-
-
-🧠 Cách 2: Dùng IntelliJ IDEA
-
-Bấm vào tên nhánh (main) ở widget nhánh (góc phải).
-
-Chọn + New Branch.
-
-Nhập tên: feature/ten-tinh-nang.
-
-Đảm bảo ô "Checkout branch" được tích.
-
-Bấm Create.
-
-Bước 3: Code, Commit và Push
-
-Sau khi code xong, hãy lưu lại và đẩy lên server.
-
-💻 Cách 1: Dùng Terminal
-
-git add .
-git commit -m "Add login form UI"
-git push origin feature/ten-tinh-nang
-
-
-🧠 Cách 2: Dùng IntelliJ IDEA (Siêu nhanh)
-
-Bấm phím tắt Ctrl + K (hoặc Cmd + K trên Mac) để mở cửa sổ Commit.
-
-Tích chọn các file muốn lưu.
-
-Viết mô tả vào ô Commit Message.
-
-Bấm vào mũi tên nhỏ bên cạnh nút Commit, chọn Commit and Push...
-
-Bấm Push ở cửa sổ xác nhận hiện ra sau đó.
-
-Bước 4: Tạo Pull Request (PR)
-
-Bước này thực hiện trên Web GitHub.
-
-Vào Repository trên GitHub.
-
-Bạn sẽ thấy thông báo "Compare & pull request" màu vàng hiện lên. Bấm vào đó.
-
-Review lại tiêu đề và mô tả những gì bạn đã làm.
-
-Bấm Create Pull Request.
-
-Mẹo: Trong IntelliJ, nếu bạn cài plugin GitHub, bạn có thể tạo PR ngay trong IDE tại tab Pull Requests bên trái.
-
-Bước 5: Chờ kiểm tra tự động (Automated Checks)
-
-Hệ thống CI (GitHub Actions) sẽ tự chạy để kiểm tra code của bạn (file pr-validation.yml).
-
-🟡 Vàng: Đang chạy... (Đi uống nước chờ xíu).
-
-🔴 Đỏ (Fail): Code lỗi hoặc Test sai.
-
-Xử lý: Xem log lỗi trên GitHub, sửa code ở máy local (IntelliJ), sau đó Commit & Push lại (lặp lại Bước 3). PR sẽ tự cập nhật.
-
-✅ Xanh (Pass): Code ngon, sẵn sàng để Review.
-
-Bước 6: Review và Merge
-
-Gửi link PR vào nhóm chat team: "Ae review hộ cái PR login nhé".
-
-Đồng đội vào xem code, comment góp ý hoặc bấm Approve.
-
-Khi đủ 2 điều kiện: Đèn Xanh (✅) VÀ Được Approve, nút Merge sẽ sáng lên.
-
-Bấm Merge để gộp code vào main.
-
-🆘 Xử lý sự cố thường gặp (Troubleshooting)
-
-Q: Đang push thì IntelliJ báo "Push Rejected" (Conflict)?
-
-A: Bạn cần lấy code mới nhất từ main về gộp vào nhánh của bạn.
-
-Tại IntelliJ: Click vào nhánh main (Local) -> Chọn Update.
-
-Click vào nhánh main lần nữa -> Chọn Merge 'main' into 'feature/...'.
-
-Giải quyết conflict (nếu có) bằng giao diện 3 cửa sổ của IntelliJ.
-
-Commit và Push lại.
-
-Q: Lỡ code trên main mà quên tạo nhánh?
-
-A: Đừng lo.
-
-Tại IntelliJ: Vào menu Git -> Uncommitted Changes -> Stash Changes (Cất tạm code đi).
-
-Tạo nhánh mới (feature/xyz).
-
-Vào menu Git -> Uncommitted Changes -> Unstash Changes (Lôi code ra lại).
+# NoteHub
+
+**NoteHub** là một nền tảng hỗ trợ làm việc nhóm hiệu quả, giúp các thành viên trong team cộng tác và quản lý công việc một cách dễ dàng. Dự án được xây dựng với kiến trúc hiện đại, đảm bảo khả năng mở rộng và hiệu năng cao.
+
+---
+
+## 🚀 Giới thiệu (Project Overview)
+
+NoteHub cung cấp các công cụ cần thiết để tối ưu hóa quy trình làm việc nhóm.
+**Các tính năng chính:**
+*   Quản lý người dùng và xác thực, phân quyền bảo mật (SSO với Keycloak).
+*   Giao diện tương tác mượt mà, thân thiện với người dùng.
+*   Hệ thống Backend mạnh mẽ dựa trên kiến trúc Spring Modulith.
+*   Tích hợp Cloudinary để quản lý tài nguyên media.
+
+---
+
+## 🛠 Công nghệ sử dụng (Tech Stack)
+
+Dự án sử dụng các công nghệ tiên tiến nhất hiện nay:
+
+### Backend
+*   **Ngôn ngữ:** Java 21
+*   **Framework:** Spring Boot 3.5.9, Spring Modulith 1.4.6
+*   **Database:** MySQL 8.0 (JPA/Hibernate)
+*   **Security:** Spring Security (OAuth2 Resource Server), Keycloak
+*   **Tools:** Flyway (Migration), MapStruct, SpringDoc OpenAPI (Swagger)
+
+### Frontend
+*   **Framework:** React 19
+*   **Build Tool:** Vite
+*   **Language:** TypeScript
+*   **Styling:** TailwindCSS, Mantine UI
+*   **State/Data Fetching:** Axios, React Query (Orval generated)
+
+### Infrastructure
+*   **Containerization:** Docker, Docker Compose
+*   **Identity Provider:** Keycloak 26.5
+
+---
+
+## 📂 Cấu trúc dự án (Project Structure)
+
+```
+NodeHub/
+├── src/
+│   ├── main/
+│   │   ├── java/         # Mã nguồn Java chính (Domain, API, Logic)
+│   │   └── resources/    # Cấu hình (application.yml), DB Migration (Flyway)
+│   └── test/             # Testing
+│       └── java/         # Unit & Integration Tests (Testcontainers, Modulith)
+├── frontend/             # Source code Frontend (ReactJS)
+│   ├── src/              # Components, Pages, Hooks
+│   ├── public/           # Static assets
+│   └── package.json      # Dependencies frontend
+├── docker-data/          # Dữ liệu persistent cho Docker (MySQL, Keycloak)
+├── keycloak-config/      # Cấu hình import cho Keycloak
+├── compose.yaml          # File cấu hình Docker Compose
+└── build.gradle          # Quản lý dependencies Backend
+```
+
+---
+
+## ✅ Yêu cầu tiên quyết (Prerequisites)
+
+Trước khi bắt đầu, hãy đảm bảo máy của bạn đã cài đặt:
+
+*   **Docker & Docker Compose:** Bắt buộc (để chạy Backend và Database).
+*   **Node.js:** Phiên bản 20 trở lên (khuyến nghị dùng Bun hoặc npm) - Dành cho Frontend Developer.
+*   **Java Development Kit (JDK):** Phiên bản 21 - Chỉ cần thiết nếu bạn muốn phát triển Backend.
+*   **Git:** Để quản lý mã nguồn.
+
+---
+
+## ⚙️ Cài đặt & Cấu hình (Installation & Configuration)
+
+### 1. Clone dự án
+```bash
+git clone <repository-url>
+cd NodeHub
+```
+
+### 2. Cấu hình biến môi trường
+Tạo file `.env` tại thư mục gốc của dự án. Bạn có thể copy từ file mẫu (nếu có) hoặc cấu hình các biến quan trọng sau (tham khảo `compose.yaml`):
+
+```env
+# Docker Hub (Để pull image Backend)
+DOCKER_HUB_USERNAME=your_docker_username
+DOCKER_HUB_REPO=note-backend
+
+# Database
+MYSQL_DATABASE=notehub_db
+MYSQL_USER=admin
+MYSQL_PASSWORD=secret
+MYSQL_ROOT_PASSWORD=root_secret
+MYSQL_LOCAL_PORT=3306
+MYSQL_DOCKER_PORT=3306
+
+# Keycloak
+KEYCLOAK_ADMIN=admin
+KEYCLOAK_ADMIN_PASSWORD=admin
+KEYCLOAK_PORT=8180
+KEYCLOAK_CLIENT_SECRET=your_client_secret
+
+# Google OAuth (Optional)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# App
+APP_BASE_URL=http://localhost:8180
+BACKEND_PORT=8080
+```
+
+### 3. Cài đặt Dependencies
+
+**Frontend (Bắt buộc cho FE Dev):**
+```bash
+cd frontend
+npm install
+# Hoặc nếu dùng bun
+bun install
+```
+
+**Backend (Chỉ dành cho Backend Dev):**
+Nếu bạn chỉ làm Frontend, bạn có thể bỏ qua bước này vì Backend sẽ chạy qua Docker Image.
+```bash
+./gradlew build -x test
+```
+
+---
+
+## ▶️ Hướng dẫn chạy (How to Run)
+
+### Cách 1: Chạy toàn bộ Backend bằng Docker (Dành cho Frontend Team)
+Backend đã được đóng gói sẵn trên Docker Hub. Bạn chỉ cần chạy lệnh sau để khởi động toàn bộ hệ thống (MySQL, Keycloak, Backend App).
+
+**1. Khởi động Backend & Services:**
+```bash
+docker-compose up -d
+```
+*   Lệnh này sẽ tự động pull image mới nhất của Backend về máy.
+*   Backend API: `http://localhost:8080`
+*   Keycloak: `http://localhost:8180`
+
+**2. Chạy Frontend:**
+Mở một terminal mới:
+```bash
+cd frontend
+npm run dev
+```
+Truy cập Frontend tại: `http://localhost:5173`
+
+### Cách 2: Chạy môi trường Development (Dành cho Backend Team)
+Nếu bạn cần sửa code Backend, hãy chạy theo cách này.
+
+**1. Khởi động Infrastructure (MySQL, Keycloak):**
+```bash
+docker-compose up -d mysql keycloak
+```
+
+**2. Chạy Backend (Local):**
+```bash
+./gradlew bootRun
+```
+
+**3. Chạy Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+---
+
+## ❓ Troubleshooting (Các lỗi thường gặp)
+
+1.  **Lỗi không pull được image:**
+    *   Kiểm tra biến `DOCKER_HUB_USERNAME` và `DOCKER_HUB_REPO` trong file `.env` đã chính xác chưa.
+
+2.  **Lỗi cổng (Port Conflict):**
+    *   Nếu cổng `3306` (MySQL) hoặc `8080`/`8180` (Keycloak) đã bị chiếm dụng, hãy đổi cổng trong file `.env` hoặc tắt service đang chạy.
+
+---
+**Happy Coding! 🚀**
