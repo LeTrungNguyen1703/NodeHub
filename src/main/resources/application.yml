@@ -6,6 +6,9 @@ spring:
     locations: classpath:db/migration
   application:
     name: note-system
+  docker:
+    compose:
+      lifecycle-management: start_only
   jpa:
     hibernate:
       ddl-auto: validate
