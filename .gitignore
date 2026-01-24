@@ -40,3 +40,9 @@ out/
 .env
 /docker-data/**
 /docker-data/
+
+/prompts/
+/prompts/**
+
+/ai-logs/
+/ai-logs/**
