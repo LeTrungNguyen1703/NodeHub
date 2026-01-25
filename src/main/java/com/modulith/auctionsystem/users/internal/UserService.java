@@ -4,7 +4,7 @@ import com.modulith.auctionsystem.users.config.UserNotFoundException;
 import com.modulith.auctionsystem.users.domain.Role;
 import com.modulith.auctionsystem.users.domain.User;
 import com.modulith.auctionsystem.users.domain.UserRepository;
-import com.modulith.auctionsystem.users.shared.UserService;
+import com.modulith.auctionsystem.users.shared.public_api.UserPublicApi;
 import com.modulith.auctionsystem.users.domain.valueobject.Email;
 import com.modulith.auctionsystem.users.shared.dto.UpdateProfileRequest;
 import com.modulith.auctionsystem.users.shared.dto.UserResponse;
@@ -28,7 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
-class UserServiceImpl implements UserService {
+class UserService implements UserPublicApi {
 
     UserRepository userRepository;
     UserMapper userMapper;
@@ -113,7 +113,7 @@ class UserServiceImpl implements UserService {
         try {
             UserResource userResource = keycloak.realm(realm).users().get(userId);
             UserRepresentation userRepresentation = userResource.toRepresentation();
-            this.handleSplitFullNameToFristAndLastName(user, userRepresentation);
+            this.handleSplitFullNameToFirstAndLastName(user, userRepresentation);
             userResource.update(userRepresentation);
             log.debug("Successfully updated Keycloak user {}", userId);
 
@@ -131,7 +131,7 @@ class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    void handleSplitFullNameToFristAndLastName(User user, UserRepresentation userRepresentation) {
+    void handleSplitFullNameToFirstAndLastName(User user, UserRepresentation userRepresentation) {
         if (user.getFullName() != null) {
             String fullName = user.getFullName().trim();
             if (!fullName.isBlank()) {

@@ -1,7 +1,7 @@
 package com.modulith.auctionsystem.users.web.controllers;
 
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
-import com.modulith.auctionsystem.users.shared.AuthService;
+import com.modulith.auctionsystem.users.shared.public_api.AuthPublicApi;
 import com.modulith.auctionsystem.users.shared.dto.LoginRequest;
 import com.modulith.auctionsystem.users.shared.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "APIs for user authentication via Keycloak")
 class AuthController {
 
-    private final AuthService authService;
+    private final AuthPublicApi authPublicApi;
 
     @PostMapping("/login")
     @Operation(
@@ -55,7 +55,7 @@ class AuthController {
     ) {
         log.info("Login attempt for user: {}", loginRequest.getUsername());
 
-        LoginResponse loginResponse = authService.login(loginRequest);
+        LoginResponse loginResponse = authPublicApi.login(loginRequest);
 
         return ResponseEntity.ok(
                 GenericApiResponse.success(
