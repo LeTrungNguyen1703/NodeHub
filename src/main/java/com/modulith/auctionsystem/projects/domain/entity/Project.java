@@ -1,8 +1,8 @@
 package com.modulith.auctionsystem.projects.domain.entity;
 
 import com.modulith.auctionsystem.common.domain.AbstractAuditableEntity;
-import com.modulith.auctionsystem.projects.config.UserAlreadyInProjectException;
-import com.modulith.auctionsystem.projects.config.UserNotBelongToProjectException;
+import com.modulith.auctionsystem.projects.config.exceptions.UserAlreadyInProjectException;
+import com.modulith.auctionsystem.projects.config.exceptions.UserNotBelongToProjectException;
 import com.modulith.auctionsystem.projects.domain.valueobject.ProjectName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -70,6 +70,4 @@ public class Project extends AbstractAuditableEntity {
         this.members.remove(memberToRemove);
         memberToRemove.setProject(null);
     }
-
-
 }

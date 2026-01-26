@@ -1,6 +1,6 @@
 package com.modulith.auctionsystem.projects.internal;
 
-import com.modulith.auctionsystem.projects.config.ProjectNotFoundException;
+import com.modulith.auctionsystem.projects.config.exceptions.ProjectNotFoundException;
 import com.modulith.auctionsystem.projects.domain.entity.Project;
 import com.modulith.auctionsystem.projects.domain.repository.ProjectRepository;
 import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;

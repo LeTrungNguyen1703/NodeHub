@@ -1,7 +1,7 @@
 package com.modulith.auctionsystem.projects.internal;
 
-import com.modulith.auctionsystem.projects.config.UserAlreadyInProjectException;
-import com.modulith.auctionsystem.projects.config.UserNotBelongToProjectException;
+import com.modulith.auctionsystem.projects.config.exceptions.UserAlreadyInProjectException;
+import com.modulith.auctionsystem.projects.config.exceptions.UserNotBelongToProjectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

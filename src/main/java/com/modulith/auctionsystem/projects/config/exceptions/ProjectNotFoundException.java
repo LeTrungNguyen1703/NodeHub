@@ -1,4 +1,4 @@
-package com.modulith.auctionsystem.projects.config;
+package com.modulith.auctionsystem.projects.config.exceptions;
 
 public class ProjectNotFoundException extends IllegalArgumentException {
     public ProjectNotFoundException(String message) {
