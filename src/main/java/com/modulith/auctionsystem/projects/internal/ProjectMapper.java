@@ -1,10 +1,12 @@
-package com.modulith.auctionsystem.projects.internal.mapper;
+package com.modulith.auctionsystem.projects.internal;
 
 import com.modulith.auctionsystem.projects.domain.entity.Project;
 import com.modulith.auctionsystem.projects.domain.entity.ProjectMember;
 import com.modulith.auctionsystem.projects.domain.valueobject.ProjectName;
 import com.modulith.auctionsystem.projects.shared.dto.*;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface ProjectMapper {
@@ -22,6 +24,8 @@ interface ProjectMapper {
     @Mapping(target = "projectId", source = "id.projectId")
     @Mapping(target = "userId", source = "id.userId")
     ProjectMemberResponse toProjectMemberResponse(ProjectMember projectMember);
+
+    List<ProjectResponse> toProjectResponses(List<Project> projects);
 
     default ProjectName mapProjectName(String name) {
         return name != null ? new ProjectName(name) : null;

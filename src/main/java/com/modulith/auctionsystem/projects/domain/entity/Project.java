@@ -1,13 +1,17 @@
 package com.modulith.auctionsystem.projects.domain.entity;
 
 import com.modulith.auctionsystem.common.domain.AbstractAuditableEntity;
+import com.modulith.auctionsystem.projects.config.UserAlreadyInProjectException;
+import com.modulith.auctionsystem.projects.config.UserNotBelongToProjectException;
 import com.modulith.auctionsystem.projects.domain.valueobject.ProjectName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,10 +45,31 @@ public class Project extends AbstractAuditableEntity {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Size(max = 36)
-    @Column(name = "created_by", length = 36)
-    private String createdBy;
-
     @Column(name = "deleted_at")
-    private java.time.Instant deletedAt;
+    private Instant deletedAt;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<ProjectMember> members = new HashSet<>();
+
+    public void addMember(String userId) {
+        ProjectMember newMember = new ProjectMember(this, userId);
+        if (this.members.contains(newMember)) {
+            throw new UserAlreadyInProjectException("User is already a member of this project. " + userId);
+        }
+        this.members.add(newMember);
+    }
+
+    public void removeMember(String userId) {
+        ProjectMember memberToRemove = this.members.stream()
+                .filter(m -> m.getId().getUserId().equals(userId))
+                .findFirst()
+                .orElseThrow(
+                        () -> new UserNotBelongToProjectException("User is not a member of this project. " + userId));
+
+        this.members.remove(memberToRemove);
+        memberToRemove.setProject(null);
+    }
+
+
 }

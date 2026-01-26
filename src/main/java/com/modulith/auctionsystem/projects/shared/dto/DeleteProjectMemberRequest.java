@@ -3,10 +3,14 @@ package com.modulith.auctionsystem.projects.shared.dto;
 import com.modulith.auctionsystem.projects.shared.validator.ValidUserId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "Request to add a member to a project")
-public record AddProjectMemberRequest(
+@Schema(description = "Request to delete a member from a project")
+public record DeleteProjectMemberRequest(
+        @NotNull(message = "Project ID is required")
+        @Schema(description = "Project identifier", example = "1")
+        Integer projectId,
 
         @NotBlank(message = "User ID is required")
         @Size(max = 36, message = "User ID must not exceed 36 characters")
