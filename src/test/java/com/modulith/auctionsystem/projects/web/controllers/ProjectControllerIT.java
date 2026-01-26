@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modulith.auctionsystem.BaseIntegrationTest;
 import com.modulith.auctionsystem.projects.shared.dto.AddProjectMemberRequest;
 import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
+import com.modulith.auctionsystem.projects.shared.dto.UpdateProjectRequest;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.users.shared.dto.UserResponse;
 import com.modulith.auctionsystem.users.shared.public_api.UserPublicApi;
@@ -19,7 +20,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,6 +44,7 @@ class ProjectControllerIT extends BaseIntegrationTest {
     private UserPublicApi userPublicApi;
 
     private final String userId = KeycloakTestUtils.KEYCLOAK_ID;
+    private final String otherUserId = "other-user-id";
 
     private CreateProjectRequest defaultCreateRequest;
 
@@ -78,6 +79,20 @@ class ProjectControllerIT extends BaseIntegrationTest {
                     0L
             );
             when(userPublicApi.findByUserId(userId)).thenReturn(userResponse);
+            
+            var otherUserResponse = new UserResponse(
+                    otherUserId,
+                    "otheruser@gmail.com",
+                    "other",
+                    "Other User",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    0L
+            );
+            when(userPublicApi.findByUserId(otherUserId)).thenReturn(otherUserResponse);
         }
 
         @Test
@@ -95,11 +110,63 @@ class ProjectControllerIT extends BaseIntegrationTest {
         }
 
         @Test
+        @DisplayName("Should get project by ID successfully")
+        void shouldGetProjectById() throws Exception {
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
+
+            mockMvc.perform(get("/api/v1/projects/{projectId}", projectId)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.projectId").value(projectId))
+                    .andExpect(jsonPath("$.data.name").value("Test Project"));
+        }
+
+        @Test
+        @DisplayName("Should update project successfully")
+        void shouldUpdateProject() throws Exception {
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
+
+            UpdateProjectRequest updateRequest = new UpdateProjectRequest(
+                    "Updated Project Name",
+                    "Updated Description",
+                    LocalDate.now().plusDays(1),
+                    LocalDate.now().plusDays(20)
+            );
+
+            mockMvc.perform(put("/api/v1/projects/{projectId}", projectId)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateRequest)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.name").value("Updated Project Name"))
+                    .andExpect(jsonPath("$.data.description").value("Updated Description"));
+        }
+
+        @Test
+        @DisplayName("Should delete project successfully")
+        void shouldDeleteProject() throws Exception {
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
+
+            mockMvc.perform(delete("/api/v1/projects/{projectId}", projectId)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true));
+
+            // Verify it's deleted (should return 404 or empty? Service throws ProjectNotFoundException)
+            // But getProject checks deletedAt.
+            mockMvc.perform(get("/api/v1/projects/{projectId}", projectId)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isNotFound()); // Assuming GlobalExceptionHandler maps ProjectNotFoundException to 404
+        }
+
+        @Test
         @DisplayName("Should add member to project successfully")
         void shouldAddMemberToProject() throws Exception {
-            Integer projectId = createProjectAndGetId(defaultCreateRequest);
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
 
-            AddProjectMemberRequest addMemberRequest = new AddProjectMemberRequest(userId);
+            AddProjectMemberRequest addMemberRequest = new AddProjectMemberRequest(otherUserId);
 
             mockMvc.perform(post("/api/v1/projects/{projectId}/members", projectId)
                             .with(KeycloakTestUtils.getMockJwt(ROLES))
@@ -113,10 +180,10 @@ class ProjectControllerIT extends BaseIntegrationTest {
         @Test
         @DisplayName("Should remove member from project successfully")
         void shouldRemoveMemberFromProject() throws Exception {
-            Integer projectId = createProjectAndGetId(defaultCreateRequest);
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
 
             // Add member first
-            AddProjectMemberRequest addMemberRequest = new AddProjectMemberRequest(userId);
+            AddProjectMemberRequest addMemberRequest = new AddProjectMemberRequest(otherUserId);
             mockMvc.perform(post("/api/v1/projects/{projectId}/members", projectId)
                             .with(KeycloakTestUtils.getMockJwt(ROLES))
                             .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +193,7 @@ class ProjectControllerIT extends BaseIntegrationTest {
                     .andExpect(jsonPath("$.message").value("Member added successfully"));
 
             // Now remove the member
-            mockMvc.perform(delete("/api/v1/projects/{projectId}/members/{userId}", projectId, userId)
+            mockMvc.perform(delete("/api/v1/projects/{projectId}/members/{userId}", projectId, otherUserId)
                             .with(KeycloakTestUtils.getMockJwt(ROLES)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
@@ -149,7 +216,7 @@ class ProjectControllerIT extends BaseIntegrationTest {
         @Test
         @DisplayName("Should return forbidden when user who is not project owner or admin tries to add member")
         void shouldForbiddenAddMemberNotOwnerOrAdmin() throws Exception {
-            Integer projectId = createProjectAndGetId(defaultCreateRequest);
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, "test-owner-id");
 
             AddProjectMemberRequest addMemberRequest = new AddProjectMemberRequest("some-other-user-id");
 
@@ -162,8 +229,8 @@ class ProjectControllerIT extends BaseIntegrationTest {
         }
     }
 
-    private Integer createProjectAndGetId(CreateProjectRequest request) {
-        var response = projectPublicApi.createProject(request);
+    private Integer createProjectAndGetId(CreateProjectRequest request, String ownerId) {
+        var response = projectPublicApi.createProject(request, ownerId);
         return response.projectId();
     }
 }
