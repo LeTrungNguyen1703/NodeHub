@@ -1,7 +1,7 @@
 package com.modulith.auctionsystem.users.web.controllers;
 
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
-import com.modulith.auctionsystem.users.shared.UserService;
+import com.modulith.auctionsystem.users.shared.public_api.UserPublicApi;
 import com.modulith.auctionsystem.users.shared.dto.UpdateProfileRequest;
 import com.modulith.auctionsystem.users.shared.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User management", description = "APIs for managing users")
 class UserController {
 
-    private final UserService userService;
+    private final UserPublicApi userPublicApi;
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
@@ -38,7 +38,7 @@ class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     })
     public ResponseEntity<GenericApiResponse<UserResponse>> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
-        UserResponse userProfile = userService.syncUserOnLogin(jwt);
+        UserResponse userProfile = userPublicApi.syncUserOnLogin(jwt);
         return ResponseEntity.ok(GenericApiResponse.success("User profile retrieved successfully", userProfile, 200));
     }
 
@@ -57,7 +57,7 @@ class UserController {
             @AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody UpdateProfileRequest request
     ) {
-        userService.updateUserProfile(jwt.getSubject(), request);
+        userPublicApi.updateUserProfile(jwt.getSubject(), request);
         return ResponseEntity.ok(GenericApiResponse.success("User profile updated successfully", null, 200));
     }
 
@@ -75,7 +75,7 @@ class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden - Admin role required", content = @Content)
     })
     public ResponseEntity<GenericApiResponse<UserResponse>> findUserByEmail(@PathVariable String email) {
-        var user = userService.findByEmail(email);
+        var user = userPublicApi.findByEmail(email);
 
         return ResponseEntity.ok(GenericApiResponse.success("User found", user, 200));
     }
@@ -94,7 +94,7 @@ class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden - Cannot view other users", content = @Content)
     })
     public ResponseEntity<GenericApiResponse<UserResponse>> findUserById(@PathVariable String userId) {
-        var user = userService.findByUserId(userId);
+        var user = userPublicApi.findByUserId(userId);
 
         return ResponseEntity.ok(GenericApiResponse.success("User found", user, 200));
     }

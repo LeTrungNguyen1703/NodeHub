@@ -79,12 +79,21 @@ tasks.named('test') {
 
     jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
 
-    // Performance optimizations for tests
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    // Performance optimizations
+    maxParallelForks = (Runtime.runtime.availableProcessors() / 2).toInteger() ?: 1
     forkEvery = 100
 
-    // Use test result caching
-    outputs.upToDateWhen { false } // Remove this line if you want to cache test results
+    // Fix for the output.bin/IOException issue
+    // This tells Gradle to print to console rather than relying solely on binary buffers
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true // Helps prevent binary file locking in some environments
+        exceptionFormat = "full"
+    }
+
+    // Recommended: Let Gradle manage the cache properly
+    // Only use 'false' if you are debugging a flaky test that needs to run every time
+    outputs.upToDateWhen { true }
 }
 
 // Optimize annotation processing for faster incremental builds
