@@ -10,4 +10,6 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
     List<Project> findByCreatedBy(String userId);
 
     List<Project> findByCreatedByAndDeletedAtIsNull(String userId);
+
+    boolean existsByProjectIdAndCreatedBy(Integer projectId, String createdBy);
 }

@@ -7,6 +7,7 @@ import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
 import com.modulith.auctionsystem.projects.shared.dto.DeleteProjectMemberRequest;
 import com.modulith.auctionsystem.projects.shared.dto.ProjectResponse;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
+import com.modulith.auctionsystem.users.shared.public_api.UserPublicApi;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ class ProjectService implements ProjectPublicApi {
 
     ProjectRepository projectRepository;
     ProjectMapper projectMapper;
+    UserPublicApi userPublicApi;
 
 
     // CRUD operations for Project entity (Aggregate root)
@@ -40,7 +42,9 @@ class ProjectService implements ProjectPublicApi {
     @Override
     public void addProjectMember(Integer projectId, String userId) {
         var project = this.findByProjectId(projectId);
-        project.addMember(userId);
+        var user = userPublicApi.findByUserId(userId);
+
+        project.addMember(user.userId());
         projectRepository.save(project);
         log.info("Added user with id: {} to project with id: {}", userId, projectId);
 
@@ -49,11 +53,11 @@ class ProjectService implements ProjectPublicApi {
     @Override
     public void removeProjectMember(DeleteProjectMemberRequest request) {
         var project = this.findByProjectId(request.projectId());
+
         project.removeMember(request.userId());
         projectRepository.save(project);
         log.info("Removed user with id: {} from project with id: {}", request.userId(), request.projectId());
     }
-
 
     // Helper methods
 

@@ -6,6 +6,7 @@ import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
 import com.modulith.auctionsystem.projects.shared.dto.DeleteProjectMemberRequest;
 import com.modulith.auctionsystem.projects.shared.dto.ProjectResponse;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
+import com.modulith.auctionsystem.projects.shared.validator.IsProjectOwner;
 import com.modulith.auctionsystem.projects.web.docs.ProductApiStandardErrors;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,7 +47,6 @@ class ProjectController {
     }
 
     @PostMapping("/{projectId}/members")
-    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Add a member to a project",
             description = "Adds a user as a member to the specified project",
@@ -56,6 +56,7 @@ class ProjectController {
             @ApiResponse(responseCode = "201", description = "Member added successfully"),
     })
     @ProductApiStandardErrors
+    @IsProjectOwner
     public ResponseEntity<GenericApiResponse<Void>> addProjectMember(
             @PathVariable Integer projectId,
             @Valid @RequestBody AddProjectMemberRequest request) {

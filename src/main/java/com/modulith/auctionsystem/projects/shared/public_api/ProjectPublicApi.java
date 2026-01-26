@@ -12,4 +12,5 @@ public interface ProjectPublicApi {
     //CRUD operations for Project Member entity (Child entity)
     void addProjectMember(Integer projectId, String userId);
     void removeProjectMember(DeleteProjectMemberRequest request);
+
 }
