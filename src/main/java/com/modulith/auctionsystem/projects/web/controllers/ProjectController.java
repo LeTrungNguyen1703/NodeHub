@@ -10,6 +10,8 @@ import com.modulith.auctionsystem.projects.shared.validator.IsProjectOwner;
 import com.modulith.auctionsystem.projects.web.docs.ProductApiStandardErrors;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -126,7 +129,7 @@ class ProjectController {
     public ResponseEntity<GenericApiResponse<PagedResult<ProjectResponse>>> getProjects(
             @Parameter(hidden = true) @AuthenticationPrincipal Jwt jwt,
             @Parameter(hidden = true) Pageable pageable
-            ) {
+    ) {
         var userId = jwt.getSubject();
         var response = projectPublicApi.getProjectsByUserId(userId, pageable);
         return ResponseEntity.ok(GenericApiResponse.success("Projects retrieved successfully", response));
@@ -140,6 +143,8 @@ class ProjectController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Member added successfully"),
+            @ApiResponse(responseCode = "409", description = "User is already a member of this project",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
     })
     @ProductApiStandardErrors
     @IsProjectOwner
