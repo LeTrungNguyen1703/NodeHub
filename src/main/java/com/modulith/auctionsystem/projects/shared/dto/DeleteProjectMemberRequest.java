@@ -14,7 +14,6 @@ public record DeleteProjectMemberRequest(
 
         @NotBlank(message = "User ID is required")
         @Size(max = 36, message = "User ID must not exceed 36 characters")
-        @ValidUserId
         @Schema(description = "User identifier", example = "550e8400-e29b-41d4-a716-446655440000")
         String userId
 ) {

@@ -127,11 +127,11 @@ class UserService implements UserPublicApi {
 
     //----------------------------- Helper method only used inside this class -------------------------
 
-    User getUserById(String id) {
+    private User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    void handleSplitFullNameToFirstAndLastName(User user, UserRepresentation userRepresentation) {
+    private void handleSplitFullNameToFirstAndLastName(User user, UserRepresentation userRepresentation) {
         if (user.getFullName() != null) {
             String fullName = user.getFullName().trim();
             if (!fullName.isBlank()) {

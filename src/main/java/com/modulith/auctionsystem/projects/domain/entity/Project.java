@@ -3,6 +3,7 @@ package com.modulith.auctionsystem.projects.domain.entity;
 import com.modulith.auctionsystem.common.domain.AbstractAuditableEntity;
 import com.modulith.auctionsystem.projects.config.exceptions.UserAlreadyInProjectException;
 import com.modulith.auctionsystem.projects.config.exceptions.UserNotBelongToProjectException;
+import com.modulith.auctionsystem.projects.domain.enums.ProjectRole;
 import com.modulith.auctionsystem.projects.domain.valueobject.ProjectName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -53,11 +54,15 @@ public class Project extends AbstractAuditableEntity {
     private Set<ProjectMember> members = new HashSet<>();
 
     public void addMember(String userId) {
-        ProjectMember newMember = new ProjectMember(this, userId);
+        var newMember = new ProjectMember(this, userId);
         if (this.members.contains(newMember)) {
             throw new UserAlreadyInProjectException("User is already a member of this project. " + userId);
         }
-        this.members.add(newMember);
+
+        boolean added = this.members.add(newMember);
+        if (added && this.members.size() == 1) {
+            newMember.setRole(ProjectRole.MANAGER);
+        }
     }
 
     public void removeMember(String userId) {
