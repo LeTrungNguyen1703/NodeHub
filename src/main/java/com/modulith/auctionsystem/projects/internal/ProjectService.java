@@ -36,6 +36,7 @@ class ProjectService implements ProjectPublicApi {
     public ProjectResponse createProject(CreateProjectRequest request, String userId) {
         var project = projectMapper.toProject(request);
         project.addMember(userId);
+        project.setCreatedBy(userId);
         var savedProject = projectRepository.save(project);
         log.debug("Created new project with id: {} by user: {}", savedProject.getProjectId(), userId);
 

@@ -9,11 +9,7 @@ public record UserResponse(
         String email,
         String username,
         String fullName,
-        String phone,
-        String address,
-        LocalDate dateOfBirth,
         String avatar,
-        Role role,
-        long balance
+        Role role
 ) {
 }

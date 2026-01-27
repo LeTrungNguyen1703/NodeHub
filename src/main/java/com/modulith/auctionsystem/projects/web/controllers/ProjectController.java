@@ -5,6 +5,7 @@ import com.modulith.auctionsystem.common.web.docs.PageableDocs;
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
 import com.modulith.auctionsystem.projects.shared.dto.*;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
+import com.modulith.auctionsystem.projects.shared.validator.IsProjectMember;
 import com.modulith.auctionsystem.projects.shared.validator.IsProjectOwner;
 import com.modulith.auctionsystem.projects.web.docs.ProductApiStandardErrors;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,7 +57,6 @@ class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Get project by ID",
             description = "Retrieves detailed information about a specific project.",
@@ -66,6 +66,7 @@ class ProjectController {
             @ApiResponse(responseCode = "200", description = "Project retrieved successfully"),
     })
     @ProductApiStandardErrors
+    @IsProjectMember
     public ResponseEntity<GenericApiResponse<ProjectResponse>> getProject(
             @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Integer projectId) {

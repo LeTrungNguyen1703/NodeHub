@@ -1,10 +1,8 @@
-package com.modulith.auctionsystem.projects.domain.entity;
+package com.modulith.auctionsystem.tasks.domain.entity;
 
-import com.modulith.auctionsystem.projects.domain.enums.ProjectRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.Instant;
@@ -13,37 +11,29 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "project_members")
+@Table(name = "task_assignments")
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class ProjectMember {
+public class TaskAssignment {
 
     @EmbeddedId
-    private ProjectMemberId id;
+    private TaskAssignmentId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("projectId")
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @MapsId("taskId")
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'MEMBER'")
-    @Column(name = "role", nullable = false)
+    @Column(name = "assigned_at", nullable = false, updatable = false)
     @Builder.Default
-    private ProjectRole role = ProjectRole.MEMBER;
+    private Instant assignedAt = Instant.now();
 
-    @NotNull
-    @Column(name = "joined_at", nullable = false, updatable = false)
-    @Builder.Default
-    private Instant joinedAt = Instant.now();
-
-    public ProjectMember(Project project, String userId) {
-        this.project = project;
-        this.id = new ProjectMemberId(project.getProjectId(), userId);
-        this.role = ProjectRole.MEMBER;
-        this.joinedAt = Instant.now();
+    public TaskAssignment(Task task, String userId) {
+        this.task = task;
+        this.id = new TaskAssignmentId(task.getTaskId(), userId);
+        this.assignedAt = Instant.now();
     }
 
     @Override
@@ -53,7 +43,7 @@ public class ProjectMember {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        ProjectMember that = (ProjectMember) o;
+        TaskAssignment that = (TaskAssignment) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

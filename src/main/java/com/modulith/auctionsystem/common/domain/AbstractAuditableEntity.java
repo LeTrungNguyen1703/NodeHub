@@ -31,10 +31,10 @@ public abstract class AbstractAuditableEntity {
     private Instant updatedAt;
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by", length = 36, updatable = false)
     private String createdBy;
 
     @LastModifiedBy
-    @Column(name = "updated_by")
+    @Column(name = "updated_by", length = 36)
     private String updatedBy;
 }

@@ -72,25 +72,17 @@ class ProjectControllerIT extends BaseIntegrationTest {
                     "test",
                     "Test User",
                     null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    0L
+                    null
             );
             when(userPublicApi.findByUserId(userId)).thenReturn(userResponse);
-            
+
             var otherUserResponse = new UserResponse(
                     otherUserId,
                     "otheruser@gmail.com",
                     "other",
                     "Other User",
                     null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    0L
+                    null
             );
             when(userPublicApi.findByUserId(otherUserId)).thenReturn(otherUserResponse);
         }
@@ -115,7 +107,7 @@ class ProjectControllerIT extends BaseIntegrationTest {
             Integer projectId = createProjectAndGetId(defaultCreateRequest, userId);
 
             mockMvc.perform(get("/api/v1/projects/{projectId}", projectId)
-                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                            .with(KeycloakTestUtils.getMockJwt("client_user")))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.projectId").value(projectId))
@@ -226,6 +218,23 @@ class ProjectControllerIT extends BaseIntegrationTest {
                             .content(objectMapper.writeValueAsString(addMemberRequest)))
                     .andExpect(status().isForbidden());
 
+        }
+
+        @Test
+        @DisplayName("Should return forbidden when user who is not project member or admin tries to get specific project")
+        void shouldForbiddenGetProjectNotMemberOrAdmin() throws Exception {
+            Integer projectId = createProjectAndGetId(defaultCreateRequest, "test-owner-id");
+            mockMvc.perform(get("/api/v1/projects/{projectId}", projectId)
+                            .with(KeycloakTestUtils.getMockJwt("client_user"))) // Not an admin or member
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DisplayName("Should return project not found")
+        void shouldProjectNotFound() throws Exception {
+            mockMvc.perform(get("/api/v1/projects/{projectId}", 9999)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isNotFound());
         }
     }
 

@@ -13,19 +13,6 @@ public record UpdateProfileRequest(
         @Schema(description = "User's full name", example = "John Doe")
         String fullName,
 
-        @Size(min = 9,max = 12, message = "Phone number must be between 9 and 12 characters")
-        @Pattern(regexp = "^[0-9+\\-\\s()]*$", message = "Phone number contains invalid characters")
-        @Schema(description = "Phone number", example = "+1234567890")
-        String phone,
-
-        @Size(min = 5,max = 500, message = "Address must be between 5 and 500 characters")
-        @Schema(description = "User address", example = "123 Main St, City, Country")
-        String address,
-
-        @Past(message = "Date of birth must be in the past")
-        @Schema(description = "Date of birth", example = "1990-01-01")
-        LocalDate dateOfBirth,
-
         @Size(min = 1,max = 255, message = "Avatar URL must be between 1 and 255 characters")
         @Schema(description = "Avatar image URL", example = "https://example.com/avatar.jpg")
         String avatar
