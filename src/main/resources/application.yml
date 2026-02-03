@@ -69,3 +69,4 @@ cloudinary:
 logging:
   level:
     com.modulith.auctionsystem: DEBUG
+
