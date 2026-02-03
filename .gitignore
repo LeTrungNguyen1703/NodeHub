@@ -46,3 +46,4 @@ out/
 
 /ai-logs/
 /ai-logs/**
+/.agent/

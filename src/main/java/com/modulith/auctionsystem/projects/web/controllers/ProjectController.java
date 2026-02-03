@@ -7,7 +7,7 @@ import com.modulith.auctionsystem.projects.shared.dto.*;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.projects.shared.validator.IsProjectMember;
 import com.modulith.auctionsystem.projects.shared.validator.IsProjectOwner;
-import com.modulith.auctionsystem.projects.web.docs.ProductApiStandardErrors;
+import com.modulith.auctionsystem.projects.web.docs.ProjectApiStandardErrors;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,9 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +45,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Project created successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     public ResponseEntity<GenericApiResponse<ProjectResponse>> createProject(
             @Valid @RequestBody CreateProjectRequest request,
             @Parameter(hidden = true) @AuthenticationPrincipal Jwt jwt
@@ -68,7 +66,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Project retrieved successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     @IsProjectMember
     public ResponseEntity<GenericApiResponse<ProjectResponse>> getProject(
             @Parameter(description = "Project ID", required = true, example = "1")
@@ -87,7 +85,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Project updated successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     public ResponseEntity<GenericApiResponse<ProjectResponse>> updateProject(
             @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Integer projectId,
@@ -106,7 +104,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Project deleted successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     public ResponseEntity<GenericApiResponse<Void>> deleteProject(
             @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Integer projectId) {
@@ -124,7 +122,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Projects retrieved successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     @PageableDocs
     public ResponseEntity<GenericApiResponse<PagedResult<ProjectResponse>>> getProjects(
             @Parameter(hidden = true) @AuthenticationPrincipal Jwt jwt,
@@ -146,7 +144,7 @@ class ProjectController {
             @ApiResponse(responseCode = "409", description = "User is already a member of this project",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     @IsProjectOwner
     public ResponseEntity<GenericApiResponse<Void>> addProjectMember(
             @Parameter(description = "Project ID", required = true, example = "1")
@@ -167,7 +165,7 @@ class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Member removed successfully"),
     })
-    @ProductApiStandardErrors
+    @ProjectApiStandardErrors
     public ResponseEntity<GenericApiResponse<Void>> removeProjectMember(
             @Parameter(description = "Project ID", required = true, example = "1")
             @PathVariable Integer projectId,

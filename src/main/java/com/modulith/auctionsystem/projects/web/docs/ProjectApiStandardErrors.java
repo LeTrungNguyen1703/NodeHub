@@ -18,12 +18,12 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "401", description = "Unauthorized",
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "403", description = "Product access forbidden",
+        @ApiResponse(responseCode = "403", description = "Project access forbidden",
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
-        @ApiResponse(responseCode = "404", description = "Product not found",
+        @ApiResponse(responseCode = "404", description = "Project not found",
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error",
                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class)))
 })
-public @interface ProductApiStandardErrors {
+public @interface ProjectApiStandardErrors {
 }
