@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableAsync
-public class NoteHubApplication {
+public class NodeHubApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NoteHubApplication.class, args);
+        SpringApplication.run(NodeHubApplication.class, args);
     }
 
 }
