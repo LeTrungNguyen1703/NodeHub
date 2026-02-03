@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Import(TestcontainersConfiguration.class)
 @ActiveProfiles("test")
 @SpringBootTest
-class NoteHubApplicationTests {
+class NodeHubApplicationTests {
 
     @Test
     void contextLoads() {

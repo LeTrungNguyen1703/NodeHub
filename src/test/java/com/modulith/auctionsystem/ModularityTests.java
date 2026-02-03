@@ -5,7 +5,7 @@ import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.modulith.docs.Documenter;
 
 class ModularityTests {
-    static ApplicationModules modules = ApplicationModules.of(NoteHubApplication.class);
+    static ApplicationModules modules = ApplicationModules.of(NodeHubApplication.class);
 
     @Test
     void verifiesModularStructure() {
