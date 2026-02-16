@@ -1,4 +1,4 @@
-package com.modulith.auctionsystem.tasks.internal.mapper;
+package com.modulith.auctionsystem.tasks.internal;
 
 import com.modulith.auctionsystem.tasks.domain.entity.Task;
 import com.modulith.auctionsystem.tasks.domain.entity.TaskDependency;
