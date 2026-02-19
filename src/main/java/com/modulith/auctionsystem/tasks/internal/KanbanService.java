@@ -1,6 +1,7 @@
 package com.modulith.auctionsystem.tasks.internal;
 
 import com.modulith.auctionsystem.common.models.PagedResult;
+import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.KanbanResponse;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateKanbanRequest;
@@ -19,10 +20,12 @@ import org.springframework.stereotype.Service;
 class KanbanService implements KanbanPublicAPI {
 
     TaskPublicAPI taskPublicAPI;
+    ProjectPublicApi projectPublicApi;
     KanbanMapper kanbanMapper;
 
     @Override
     public PagedResult<KanbanResponse> getKanbanBoards() {
+
         return null;
     }
 
@@ -39,6 +42,7 @@ class KanbanService implements KanbanPublicAPI {
     @Override
     public KanbanResponse createKanbanBoard(CreateKanbanRequest request, String userId) {
         return null;
+
     }
 
     @Override
