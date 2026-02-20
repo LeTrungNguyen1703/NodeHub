@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Kanban Boards", description = "Kanban board management APIs")
 class KanbanController {
 
-    // NOTE: Implementation required - create KanbanService class implementing KanbanPublicAPI
-    // annotated with @Service("kanbanService") to wire this dependency
     private final KanbanPublicAPI kanbanPublicAPI;
 
     @PostMapping

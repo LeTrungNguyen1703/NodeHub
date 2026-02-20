@@ -13,7 +13,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "kanbans", indexes = {
         @Index(name = "idx_kanban_project_id", columnList = "project_id"),
-        @Index(name = "idx_kanban_created_by", columnList = "created_by_audit")
+        @Index(name = "idx_kanban_created_by", columnList = "created_by")
 })
 @NoArgsConstructor
 @Builder
