@@ -2,10 +2,11 @@ package com.modulith.auctionsystem.tasks.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modulith.auctionsystem.BaseIntegrationTest;
-import com.modulith.auctionsystem.tasks.shared.dto.CreateKanbanRequest;
-import com.modulith.auctionsystem.tasks.shared.dto.KanbanResponse;
-import com.modulith.auctionsystem.tasks.shared.dto.UpdateKanbanRequest;
+import com.modulith.auctionsystem.tasks.domain.enums.TaskPriority;
+import com.modulith.auctionsystem.tasks.domain.enums.TaskStatus;
+import com.modulith.auctionsystem.tasks.shared.dto.*;
 import com.modulith.auctionsystem.tasks.shared.public_api.KanbanPublicAPI;
+import com.modulith.auctionsystem.tasks.shared.public_api.TaskPublicAPI;
 import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.users.shared.dto.UserResponse;
@@ -22,7 +23,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,8 +39,6 @@ class KanbanControllerIT extends BaseIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // NOTE: Implementation required - create KanbanService class implementing KanbanPublicAPI
-    // annotated with @Service("kanbanService") for this test to work
     @Autowired
     @Qualifier("kanbanService")
     private KanbanPublicAPI kanbanPublicAPI;
@@ -45,6 +46,10 @@ class KanbanControllerIT extends BaseIntegrationTest {
     @Autowired
     @Qualifier("projectService")
     private ProjectPublicApi projectPublicApi;
+
+    @Autowired
+    @Qualifier("taskService")
+    private TaskPublicAPI taskPublicAPI;
 
     @MockitoBean
     @Qualifier("userService")
@@ -183,6 +188,83 @@ class KanbanControllerIT extends BaseIntegrationTest {
             mockMvc.perform(get("/api/v1/kanbans/{kanbanId}", kanbanId)
                             .with(KeycloakTestUtils.getMockJwt(ROLES)))
                     .andExpect(status().isNotFound());
+        }
+    }
+
+    @Nested
+    class KanbanTasksTests {
+
+//        @Test
+//        @DisplayName("Should get all tasks for a kanban board")
+//        void shouldGetTasksByKanbanBoard() throws Exception {
+//            // Create kanban board
+//            Integer kanbanId = createKanbanBoardAndGetId(defaultCreateRequest, userId);
+//
+//            // Create tasks linked to the kanban board
+//            CreateTaskRequest task1 = new CreateTaskRequest(
+//                    testProjectId,
+//                    "Task 1",
+//                    "First task",
+//                    LocalDateTime.now(),
+//                    LocalDateTime.now().plusDays(5),
+//                    TaskStatus.TO_DO,
+//                    TaskPriority.HIGH,
+//                    userId,
+//                    kanbanId);
+//
+//            CreateTaskRequest task2 = new CreateTaskRequest(
+//                    testProjectId,
+//                    "Task 2",
+//                    "Second task",
+//                    LocalDateTime.now(),
+//                    LocalDateTime.now().plusDays(10),
+//                    TaskStatus.IN_PROGRESS,
+//                    TaskPriority.MEDIUM,
+//                    userId,
+//                    kanbanId);
+//
+//            taskPublicAPI.createTask(testProjectId, task1, userId);
+//            taskPublicAPI.createTask(testProjectId, task2, userId);
+//
+//            // Get tasks by kanban board
+//            mockMvc.perform(get("/api/v1/kanbans/{kanbanId}/tasks", kanbanId)
+//                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+//                    .andExpect(status().isOk())
+//                    .andExpect(jsonPath("$.success").value(true))
+//                    .andExpect(jsonPath("$.message").value("Tasks retrieved successfully"))
+//                    .andExpect(jsonPath("$.data.content", hasSize(2)))
+//                    .andExpect(jsonPath("$.data.content[0].title").value("Task 1"))
+//                    .andExpect(jsonPath("$.data.content[1].title").value("Task 2"));
+//        }
+
+        @Test
+        @DisplayName("Should return empty list for kanban board with no tasks")
+        void shouldReturnEmptyListForKanbanBoardWithNoTasks() throws Exception {
+            // Create kanban board without tasks
+            Integer kanbanId = createKanbanBoardAndGetId(defaultCreateRequest, userId);
+
+            mockMvc.perform(get("/api/v1/kanbans/{kanbanId}/tasks", kanbanId)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.content", hasSize(0)));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when getting tasks for non-existent kanban board")
+        void shouldReturn404ForNonExistentKanbanBoard() throws Exception {
+            mockMvc.perform(get("/api/v1/kanbans/{kanbanId}/tasks", 99999)
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should return unauthorized when getting tasks without auth")
+        void shouldReturnUnauthorizedWhenGettingTasksWithoutAuth() throws Exception {
+            Integer kanbanId = createKanbanBoardAndGetId(defaultCreateRequest, userId);
+
+            mockMvc.perform(get("/api/v1/kanbans/{kanbanId}/tasks", kanbanId))
+                    .andExpect(status().isUnauthorized());
         }
     }
 

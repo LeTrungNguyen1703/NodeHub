@@ -1,10 +1,12 @@
 package com.modulith.auctionsystem.tasks.web.controller;
 
 import com.modulith.auctionsystem.common.models.PagedResult;
+import com.modulith.auctionsystem.common.web.docs.PageableDocs;
 import com.modulith.auctionsystem.common.web.response.GenericApiResponse;
 import com.modulith.auctionsystem.projects.shared.validator.IsProjectMember;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.KanbanResponse;
+import com.modulith.auctionsystem.tasks.shared.dto.TaskResponse;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.public_api.KanbanPublicAPI;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -83,8 +86,10 @@ class KanbanController {
             @ApiResponse(responseCode = "200", description = "Kanban boards retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<GenericApiResponse<PagedResult<KanbanResponse>>> getAllKanbanBoards() {
-        var response = kanbanPublicAPI.getKanbanBoards();
+    @PageableDocs
+    public ResponseEntity<GenericApiResponse<PagedResult<KanbanResponse>>> getAllKanbanBoards(
+            @Parameter(hidden = true) Pageable pageable) {
+        var response = kanbanPublicAPI.getKanbanBoards(pageable);
         return ResponseEntity.ok(GenericApiResponse.success("Kanban boards retrieved successfully", response));
     }
 
@@ -101,11 +106,34 @@ class KanbanController {
             @ApiResponse(responseCode = "404", description = "Project not found"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
+    @PageableDocs
     public ResponseEntity<GenericApiResponse<PagedResult<KanbanResponse>>> getKanbanBoardsByProject(
             @Parameter(description = "Project ID", required = true, example = "1")
-            @PathVariable Integer projectId) {
-        var response = kanbanPublicAPI.getKanbanBoardsByProjectId(projectId);
+            @PathVariable Integer projectId,
+            @Parameter(hidden = true) Pageable pageable) {
+        var response = kanbanPublicAPI.getKanbanBoardsByProjectId(projectId, pageable);
         return ResponseEntity.ok(GenericApiResponse.success("Kanban boards retrieved successfully", response));
+    }
+
+    @GetMapping("/{kanbanId}/tasks")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "Get tasks by Kanban board",
+            description = "Retrieves all tasks associated with a specific Kanban board, ordered by status and position.",
+            security = @SecurityRequirement(name = "bearer-jwt")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Kanban board not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @PageableDocs
+    public ResponseEntity<GenericApiResponse<PagedResult<TaskResponse>>> getTasksByKanbanBoard(
+            @Parameter(description = "Kanban board ID", required = true, example = "1")
+            @PathVariable Integer kanbanId,
+            @Parameter(hidden = true) Pageable pageable) {
+        var response = kanbanPublicAPI.getTasksByKanbanBoard(kanbanId, pageable);
+        return ResponseEntity.ok(GenericApiResponse.success("Tasks retrieved successfully", response));
     }
 
     @PutMapping("/{kanbanId}")

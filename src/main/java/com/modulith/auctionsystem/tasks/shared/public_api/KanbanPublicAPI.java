@@ -3,7 +3,9 @@ package com.modulith.auctionsystem.tasks.shared.public_api;
 import com.modulith.auctionsystem.common.models.PagedResult;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.KanbanResponse;
+import com.modulith.auctionsystem.tasks.shared.dto.TaskResponse;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateKanbanRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * KanbanPublicAPI exposes Kanban board operations to other modules.
@@ -17,17 +19,22 @@ public interface KanbanPublicAPI {
     /**
      * Return a paginated list of Kanban boards visible to the caller.
      */
-    PagedResult<KanbanResponse> getKanbanBoards();
+    PagedResult<KanbanResponse> getKanbanBoards(Pageable pageable);
 
     /**
      * Return all Kanban boards for a specific project.
      */
-    PagedResult<KanbanResponse> getKanbanBoardsByProjectId(Integer projectId);
+    PagedResult<KanbanResponse> getKanbanBoardsByProjectId(Integer projectId, Pageable pageable);
 
     /**
      * Return a single Kanban board by id. Throw not-found exception if missing.
      */
     KanbanResponse getKanbanBoardById(Integer kanbanId);
+
+    /**
+     * Return all tasks associated with a specific Kanban board, ordered by status and position.
+     */
+    PagedResult<TaskResponse> getTasksByKanbanBoard(Integer kanbanId, Pageable pageable);
 
     /**
      * Create a new Kanban board in the given project and return the created representation.

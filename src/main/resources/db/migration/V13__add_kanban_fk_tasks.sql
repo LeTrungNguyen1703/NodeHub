@@ -1,0 +1,17 @@
+ALTER TABLE tasks
+    ADD kanban_id INT NULL;
+
+ALTER TABLE tasks
+    ADD CONSTRAINT FK_TASKS_ON_KANBAN FOREIGN KEY (kanban_id) REFERENCES kanbans (kanban_id);
+
+ALTER TABLE comments
+    ALTER updated_at SET DEFAULT (CURRENT_TIMESTAMP);
+
+ALTER TABLE notifications
+    ALTER updated_at SET DEFAULT (CURRENT_TIMESTAMP);
+
+ALTER TABLE projects
+    ALTER updated_at SET DEFAULT (CURRENT_TIMESTAMP);
+
+ALTER TABLE tasks
+    ALTER updated_at SET DEFAULT (CURRENT_TIMESTAMP);

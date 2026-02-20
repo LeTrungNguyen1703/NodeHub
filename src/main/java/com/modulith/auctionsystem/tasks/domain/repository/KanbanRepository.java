@@ -18,23 +18,14 @@ public interface KanbanRepository extends JpaRepository<Kanban, Integer> {
 
     Page<Kanban> findAllByDeletedAtIsNull(Pageable pageable);
 
+    Page<Kanban> findByProjectIdAndDeletedAtIsNull(Integer projectId, Pageable pageable);
+
     default PagedResult<Kanban> findAllKanbanBoards(Pageable pageable) {
         return new PagedResult<>(findAllByDeletedAtIsNull(PageUtils.makePageable(pageable, "kanbanId")));
     }
 
-    default PagedResult<Kanban> findKanbanBoardsByProjectId(Integer projectId) {
-        List<Kanban> kanbans = findByProjectIdAndDeletedAtIsNull(projectId);
-        // Create a simple PagedResult from a List (single page with all results)
-        return new PagedResult<>(
-                kanbans,
-                kanbans.size(),
-                1,
-                1,
-                true,
-                true,
-                false,
-                false
-        );
+    default PagedResult<Kanban> findKanbanBoardsByProjectId(Integer projectId, Pageable pageable) {
+        return new PagedResult<>(findByProjectIdAndDeletedAtIsNull(projectId, PageUtils.makePageable(pageable, "kanbanId")));
     }
 }
 

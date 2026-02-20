@@ -1,5 +1,6 @@
 package com.modulith.auctionsystem.tasks.internal;
 
+import com.modulith.auctionsystem.tasks.domain.entity.Kanban;
 import com.modulith.auctionsystem.tasks.domain.entity.Task;
 import com.modulith.auctionsystem.tasks.domain.entity.TaskDependency;
 import com.modulith.auctionsystem.tasks.domain.enums.TaskPriority;
@@ -10,10 +11,12 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface TaskMapper {
 
+    @Mapping(target = "kanbanId", source = "kanban.kanbanId")
     TaskResponse toTaskResponse(Task task);
 
     @Mapping(target = "status", expression = "java(mapStatus(createTaskRequest.status()))")
     @Mapping(target = "priority", expression = "java(mapPriority(createTaskRequest.priority()))")
+    @Mapping(target = "kanban", expression = "java(mapKanban(createTaskRequest.kanbanId()))")
     Task toTask(CreateTaskRequest createTaskRequest);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -31,5 +34,14 @@ interface TaskMapper {
 
     default TaskPriority mapPriority(TaskPriority priority) {
         return priority != null ? priority : TaskPriority.MEDIUM;
+    }
+
+    default Kanban mapKanban(Integer kanbanId) {
+        if (kanbanId == null) {
+            return null;
+        }
+        Kanban kanban = new Kanban();
+        kanban.setKanbanId(kanbanId);
+        return kanban;
     }
 }

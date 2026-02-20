@@ -63,7 +63,13 @@ public class Task extends AbstractAuditableEntity {
     @Column(name = "assigned_to", length = 36)
     private String assignedTo; // Cross-module reference - no JPA relationship
 
+
     @ColumnDefault("65535.0")
     @Column(name = "position_index")
     private Double positionIndex; // Position for drag-and-drop ordering within status column
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "kanban_id")
+    private Kanban kanban;
+
 }

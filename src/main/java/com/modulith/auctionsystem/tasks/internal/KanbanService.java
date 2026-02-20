@@ -5,8 +5,10 @@ import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.tasks.config.exceptions.KanbanNotFoundException;
 import com.modulith.auctionsystem.tasks.domain.entity.Kanban;
 import com.modulith.auctionsystem.tasks.domain.repository.KanbanRepository;
+import com.modulith.auctionsystem.tasks.domain.repository.TaskRepository;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.KanbanResponse;
+import com.modulith.auctionsystem.tasks.shared.dto.TaskResponse;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateKanbanRequest;
 import com.modulith.auctionsystem.tasks.shared.public_api.KanbanPublicAPI;
 import lombok.AccessLevel;
@@ -25,21 +27,23 @@ import java.time.Instant;
 class KanbanService implements KanbanPublicAPI {
 
     KanbanRepository kanbanRepository;
+    TaskRepository taskRepository;
     ProjectPublicApi projectPublicApi;
     KanbanMapper kanbanMapper;
+    TaskMapper taskMapper;
 
     @Override
-    public PagedResult<KanbanResponse> getKanbanBoards() {
-        var kanbans = kanbanRepository.findAllKanbanBoards(Pageable.unpaged());
+    public PagedResult<KanbanResponse> getKanbanBoards(Pageable pageable) {
+        var kanbans = kanbanRepository.findAllKanbanBoards(pageable);
         return kanbans.map(kanbanMapper::toKanbanResponse);
     }
 
     @Override
-    public PagedResult<KanbanResponse> getKanbanBoardsByProjectId(Integer projectId) {
+    public PagedResult<KanbanResponse> getKanbanBoardsByProjectId(Integer projectId, Pageable pageable) {
         // Verify project exists
         projectPublicApi.getProject(projectId);
 
-        var kanbans = kanbanRepository.findKanbanBoardsByProjectId(projectId);
+        var kanbans = kanbanRepository.findKanbanBoardsByProjectId(projectId, pageable);
         log.debug("Found {} kanban boards for project id: {}", kanbans.totalElements(), projectId);
         return kanbans.map(kanbanMapper::toKanbanResponse);
     }
@@ -48,6 +52,17 @@ class KanbanService implements KanbanPublicAPI {
     public KanbanResponse getKanbanBoardById(Integer kanbanId) {
         var kanban = findByKanbanId(kanbanId);
         return kanbanMapper.toKanbanResponse(kanban);
+    }
+
+    @Override
+    public PagedResult<TaskResponse> getTasksByKanbanBoard(Integer kanbanId, Pageable pageable) {
+        // Verify kanban exists
+        findByKanbanId(kanbanId);
+
+        var tasks = taskRepository.findByKanban_KanbanIdOrderByStatusAscPositionIndexAsc(kanbanId, pageable);
+        log.debug("Found {} tasks for kanban board id: {}", tasks.getTotalElements(), kanbanId);
+
+        return new PagedResult<>(tasks.map(taskMapper::toTaskResponse));
     }
 
     @Override
