@@ -4,6 +4,7 @@ import com.modulith.auctionsystem.common.models.PagedResult;
 import com.modulith.auctionsystem.tasks.domain.enums.TaskStatus;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateTaskRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.TaskResponse;
+import com.modulith.auctionsystem.tasks.shared.dto.UpdateTaskPositionRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateTaskRequest;
 import com.modulith.auctionsystem.tasks.shared.public_api.TaskPublicAPI;
 import lombok.AccessLevel;
@@ -59,5 +60,13 @@ class TaskService implements TaskPublicAPI {
     @Override
     public void unassignTask(Integer projectId, Integer taskId, Set<String> userIds) {
 
+    }
+
+    @Override
+    public TaskResponse updateTaskPosition(Integer projectId, UpdateTaskPositionRequest request, String userId) {
+        // TODO: Implement actual logic when TaskRepository and TaskMapper are available
+        log.info("Updating task position: taskId={}, targetStatus={}, positionIndex={}",
+                request.taskId(), request.targetStatus(), request.positionIndex());
+        return null;
     }
 }

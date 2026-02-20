@@ -56,7 +56,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
     private CreateKanbanRequest defaultCreateRequest;
     private Integer testProjectId;
 
-    private final String[] ROLES = new String[] { "client_admin", "client_user" };
+    private final String[] ROLES = new String[]{"client_admin", "client_user"};
 
     @BeforeEach
     void globalSetup() {
@@ -100,9 +100,9 @@ class KanbanControllerIT extends BaseIntegrationTest {
         @DisplayName("Should create a new Kanban board successfully")
         void shouldCreateKanbanBoard() throws Exception {
             mockMvc.perform(post("/api/v1/kanbans")
-                    .with(KeycloakTestUtils.getMockJwt(ROLES))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(defaultCreateRequest)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(defaultCreateRequest)))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.message").value("Kanban board created successfully"))
@@ -117,7 +117,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
             Integer kanbanId = createKanbanBoardAndGetId(defaultCreateRequest, userId);
 
             mockMvc.perform(get("/api/v1/kanbans/{kanbanId}", kanbanId)
-                    .with(KeycloakTestUtils.getMockJwt("client_user")))
+                            .with(KeycloakTestUtils.getMockJwt("client_user")))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.kanbanId").value(kanbanId))
@@ -131,7 +131,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
             createKanbanBoardAndGetId(defaultCreateRequest, userId);
 
             mockMvc.perform(get("/api/v1/kanbans")
-                    .with(KeycloakTestUtils.getMockJwt("client_user")))
+                            .with(KeycloakTestUtils.getMockJwt("client_user")))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.content").isArray());
@@ -143,7 +143,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
             createKanbanBoardAndGetId(defaultCreateRequest, userId);
 
             mockMvc.perform(get("/api/v1/kanbans/project/{projectId}", testProjectId)
-                    .with(KeycloakTestUtils.getMockJwt("client_user")))
+                            .with(KeycloakTestUtils.getMockJwt("client_user")))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.content").isArray());
@@ -159,9 +159,9 @@ class KanbanControllerIT extends BaseIntegrationTest {
                     "Updated Description");
 
             mockMvc.perform(put("/api/v1/kanbans/{kanbanId}", kanbanId)
-                    .with(KeycloakTestUtils.getMockJwt(ROLES))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(updateRequest)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(updateRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data.name").value("Updated Kanban Board Name"))
@@ -174,14 +174,14 @@ class KanbanControllerIT extends BaseIntegrationTest {
             Integer kanbanId = createKanbanBoardAndGetId(defaultCreateRequest, userId);
 
             mockMvc.perform(delete("/api/v1/kanbans/{kanbanId}", kanbanId)
-                    .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.message").value("Kanban board deleted successfully"));
 
             // Verify it's deleted (should return 404)
             mockMvc.perform(get("/api/v1/kanbans/{kanbanId}", kanbanId)
-                    .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
                     .andExpect(status().isNotFound());
         }
     }
@@ -198,9 +198,9 @@ class KanbanControllerIT extends BaseIntegrationTest {
                     "Description");
 
             mockMvc.perform(post("/api/v1/kanbans")
-                    .with(KeycloakTestUtils.getMockJwt(ROLES))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidRequest)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(invalidRequest)))
                     .andExpect(status().isBadRequest());
         }
 
@@ -214,9 +214,9 @@ class KanbanControllerIT extends BaseIntegrationTest {
                     "Description");
 
             mockMvc.perform(post("/api/v1/kanbans")
-                    .with(KeycloakTestUtils.getMockJwt(ROLES))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidRequest)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(invalidRequest)))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -228,8 +228,8 @@ class KanbanControllerIT extends BaseIntegrationTest {
         @DisplayName("Should return unauthorized when creating Kanban board without auth")
         void shouldUnauthorizedCreateKanbanBoard() throws Exception {
             mockMvc.perform(post("/api/v1/kanbans")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(defaultCreateRequest)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(defaultCreateRequest)))
                     .andExpect(status().isUnauthorized());
         }
 
@@ -246,7 +246,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
         @DisplayName("Should return not found for non-existent Kanban board")
         void shouldKanbanBoardNotFound() throws Exception {
             mockMvc.perform(get("/api/v1/kanbans/{kanbanId}", 99999)
-                    .with(KeycloakTestUtils.getMockJwt(ROLES)))
+                            .with(KeycloakTestUtils.getMockJwt(ROLES)))
                     .andExpect(status().isNotFound());
         }
 
@@ -262,7 +262,7 @@ class KanbanControllerIT extends BaseIntegrationTest {
             Integer otherProjectId = projectPublicApi.createProject(otherProjectRequest, otherUserId).projectId();
 
             mockMvc.perform(get("/api/v1/kanbans/project/{projectId}", otherProjectId)
-                    .with(KeycloakTestUtils.getMockJwt("client_user"))) // Not a member
+                            .with(KeycloakTestUtils.getMockJwt("client_user"))) // Not a member
                     .andExpect(status().isForbidden());
         }
     }

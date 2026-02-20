@@ -4,6 +4,7 @@ import com.modulith.auctionsystem.common.models.PagedResult;
 import com.modulith.auctionsystem.tasks.domain.enums.TaskStatus;
 import com.modulith.auctionsystem.tasks.shared.dto.CreateTaskRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.TaskResponse;
+import com.modulith.auctionsystem.tasks.shared.dto.UpdateTaskPositionRequest;
 import com.modulith.auctionsystem.tasks.shared.dto.UpdateTaskRequest;
 
 import java.util.Set;
@@ -59,4 +60,10 @@ public interface TaskPublicAPI {
      * record audit information where appropriate.
      */
     void unassignTask(Integer projectId, Integer taskId, Set<String> userIds);
+
+    /**
+     * Update task position for drag-and-drop functionality in Kanban board.
+     * Updates both status and position_index for proper ordering within columns.
+     */
+    TaskResponse updateTaskPosition(Integer projectId, UpdateTaskPositionRequest request, String userId);
 }
