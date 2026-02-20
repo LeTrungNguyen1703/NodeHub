@@ -64,9 +64,6 @@ class TaskService implements TaskPublicAPI {
 
     @Override
     public TaskResponse updateTaskPosition(Integer projectId, UpdateTaskPositionRequest request, String userId) {
-        // TODO: Implement actual logic when TaskRepository and TaskMapper are available
-        log.info("Updating task position: taskId={}, targetStatus={}, positionIndex={}",
-                request.taskId(), request.targetStatus(), request.positionIndex());
         return null;
     }
 }
