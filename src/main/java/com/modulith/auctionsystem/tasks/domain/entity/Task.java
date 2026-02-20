@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 @Table(name = "tasks", indexes = {
         @Index(name = "idx_task_project_id", columnList = "project_id"),
         @Index(name = "idx_task_assigned_to", columnList = "assigned_to"),
-        @Index(name = "idx_task_status", columnList = "status")
+        @Index(name = "idx_task_status", columnList = "status"),
+        @Index(name = "idx_task_status_position", columnList = "status, position_index")
 })
 @NoArgsConstructor
 @Builder
@@ -61,4 +62,14 @@ public class Task extends AbstractAuditableEntity {
     @Size(max = 36)
     @Column(name = "assigned_to", length = 36)
     private String assignedTo; // Cross-module reference - no JPA relationship
+
+
+    @ColumnDefault("65535.0")
+    @Column(name = "position_index")
+    private Double positionIndex; // Position for drag-and-drop ordering within status column
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "kanban_id")
+    private Kanban kanban;
+
 }

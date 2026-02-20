@@ -37,6 +37,9 @@ public record CreateTaskRequest(
 
         @Size(max = 36, message = "Assigned user ID must not exceed 36 characters")
         @Schema(description = "User ID assigned to this task", example = "550e8400-e29b-41d4-a716-446655440000")
-        String assignedTo
+        String assignedTo,
+
+        @Schema(description = "Kanban board ID this task belongs to", example = "1")
+        Integer kanbanId
 ) {
 }

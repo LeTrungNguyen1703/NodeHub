@@ -1,11 +1,11 @@
 package com.modulith.auctionsystem.projects.shared.public_api;
 
 import com.modulith.auctionsystem.common.models.PagedResult;
-import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
-import com.modulith.auctionsystem.projects.shared.dto.DeleteProjectMemberRequest;
-import com.modulith.auctionsystem.projects.shared.dto.ProjectResponse;
-import com.modulith.auctionsystem.projects.shared.dto.UpdateProjectRequest;
+import com.modulith.auctionsystem.projects.shared.dto.*;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Set;
 
 public interface ProjectPublicApi {
     //CRUD operations for Project entity (Aggregate root)
@@ -20,5 +20,6 @@ public interface ProjectPublicApi {
     //CRUD operations for Project Member entity (Child entity)
     void addProjectMember(Integer projectId, String userId);
     void removeProjectMember(DeleteProjectMemberRequest request);
+    Set<ProjectMemberResponse> getProjectMembersByProjectId(Integer projectId, Pageable pageable);
 
 }

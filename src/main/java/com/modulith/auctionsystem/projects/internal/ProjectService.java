@@ -4,10 +4,7 @@ import com.modulith.auctionsystem.common.models.PagedResult;
 import com.modulith.auctionsystem.projects.config.exceptions.ProjectNotFoundException;
 import com.modulith.auctionsystem.projects.domain.entity.Project;
 import com.modulith.auctionsystem.projects.domain.repository.ProjectRepository;
-import com.modulith.auctionsystem.projects.shared.dto.CreateProjectRequest;
-import com.modulith.auctionsystem.projects.shared.dto.DeleteProjectMemberRequest;
-import com.modulith.auctionsystem.projects.shared.dto.ProjectResponse;
-import com.modulith.auctionsystem.projects.shared.dto.UpdateProjectRequest;
+import com.modulith.auctionsystem.projects.shared.dto.*;
 import com.modulith.auctionsystem.projects.shared.public_api.ProjectPublicApi;
 import com.modulith.auctionsystem.users.shared.public_api.UserPublicApi;
 import lombok.AccessLevel;
@@ -18,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -93,6 +91,15 @@ class ProjectService implements ProjectPublicApi {
         project.removeMember(request.userId());
         projectRepository.save(project);
         log.info("Removed user with id: {} from project with id: {}", request.userId(), request.projectId());
+    }
+
+    @Override
+    public Set<ProjectMemberResponse> getProjectMembersByProjectId(Integer projectId, Pageable pageable) {
+        this.findByProjectId(projectId); // Verify project exists
+        var members = projectRepository.findMembersByProjectId(projectId);
+        return members.stream()
+                .map(projectMapper::toProjectMemberResponse)
+                .collect(java.util.stream.Collectors.toSet());
     }
 
     // Helper methods

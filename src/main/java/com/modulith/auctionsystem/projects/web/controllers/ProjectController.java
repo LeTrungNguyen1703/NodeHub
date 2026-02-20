@@ -23,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Set;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -131,6 +133,26 @@ class ProjectController {
         var userId = jwt.getSubject();
         var response = projectPublicApi.getProjectsByUserId(userId, pageable);
         return ResponseEntity.ok(GenericApiResponse.success("Projects retrieved successfully", response));
+    }
+
+    @GetMapping("/{projectId}/members")
+    @Operation(
+            summary = "Get project members",
+            description = "Retrieves all members of a project with their roles and join dates.",
+            security = @SecurityRequirement(name = "bearer-jwt")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Project members retrieved successfully"),
+    })
+    @ProjectApiStandardErrors
+    @IsProjectMember
+    @PageableDocs
+    public ResponseEntity<GenericApiResponse<Set<ProjectMemberResponse>>> getProjectMembers(
+            @Parameter(description = "Project ID", required = true, example = "1")
+            @PathVariable Integer projectId,
+            @Parameter(hidden = true) Pageable pageable) {
+        var response = projectPublicApi.getProjectMembersByProjectId(projectId, pageable);
+        return ResponseEntity.ok(GenericApiResponse.success("Project members retrieved successfully", response));
     }
 
     @PostMapping("/{projectId}/members")

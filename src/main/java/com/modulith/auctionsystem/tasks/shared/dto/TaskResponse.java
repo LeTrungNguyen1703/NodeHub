@@ -36,6 +36,12 @@ public record TaskResponse(
         @Schema(description = "User ID assigned to this task", example = "550e8400-e29b-41d4-a716-446655440000")
         String assignedTo,
 
+        @Schema(description = "Kanban board ID this task belongs to", example = "1")
+        Integer kanbanId,
+
+        @Schema(description = "Position index for Kanban ordering", example = "32768.0")
+        Double positionIndex,
+
         @Schema(description = "Creation timestamp", example = "2026-01-20T10:30:00Z")
         Instant createdAt,
 
